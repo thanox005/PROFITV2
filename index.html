@@ -1,0 +1,4267 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#0f172a">
+<title>FITPRO 2.0</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+ :root{
+    --bg:#0b1220; --app:#0f172a; --card:#111c2e; --soft:#172338;
+    --input:#0f1a2b; --text:#f8fafc; --muted:#94a3b8;
+    --border:rgba(148,163,184,.16); --green:#22c55e; --accent-text:#86efac;
+    --motivation-bg:linear-gradient(135deg,#12351f,#102a1b);
+    --motivation-border:#1f5b35; --motivation-title:#86efac; --motivation-text:#bbf7d0;
+    --level-text:#cbd5e1; --level-active-bg:#14532d; --level-active-text:#bbf7d0;
+    --green-text:#86efac; --danger-text:#fecaca; --danger-bg:#451a1a;
+    --light-button-text:#e2e8f0; color-scheme:dark;
+}
+
+body{
+    font-family:Arial,Helvetica,sans-serif; background:var(--bg); color:var(--text);
+    min-height:100vh; -webkit-text-size-adjust:100%;
+}
+
+button,input,select{
+    font:inherit;
+}
+
+ :root.light, html.light, body.light, html[data-theme="light"], body[data-theme="light"]{
+    --bg:#eef2f7;
+    --app:#f8fafc;
+    --card:#ffffff;
+    --soft:#f1f5f9;
+    --input:#f8fafc;
+    --text:#172033;
+    --muted:#64748b;
+    --border:#e2e8f0;
+    --accent-text:#15803d;
+    --motivation-bg:linear-gradient(135deg,#dcfce7,#ecfdf5);
+    --motivation-border:#bbf7d0;
+    --motivation-title:#15803d;
+    --motivation-text:#14532d;
+    --level-text:#475569;
+    --level-active-bg:#dcfce7;
+    --level-active-text:#166534;
+    --green-text:#16a34a;
+    --danger-text:#b91c1c;
+    --danger-bg:#fee2e2;
+    --light-button-text:#172033;
+    color-scheme:light;
+}
+
+body.light, html.light, html[data-theme="light"], body[data-theme="light"]{
+    background:var(--bg);
+}
+
+button{
+    cursor:pointer;
+    border:0;
+}
+
+.app{
+    width:100%;
+    max-width:480px;
+    margin:auto;
+    min-height:100vh;
+    background:var(--app);
+    padding-bottom:30px;
+}
+
+.header{
+    background:#0f172a;
+    color:white;
+    padding:22px 18px 20px;
+    position:relative;
+    border-radius:0 0 24px 24px;
+}
+
+.brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.logo{
+    width:44px;
+    height:44px;
+    border-radius:14px;
+    background:#22c55e;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:24px;
+}
+
+.brand h1{
+    font-size:21px;
+}
+
+.brand p{
+    font-size:12px;
+    color:#94a3b8;
+    margin-top:3px;
+}
+
+.content{
+    padding:16px;
+}
+
+.card{
+    background:var(--card);
+    border-radius:18px;
+    padding:15px;
+    margin-bottom:14px;
+    box-shadow:0 4px 18px rgba(15,23,42,.06);
+}
+
+.card-title{
+    font-size:14px;
+    font-weight:bold;
+    margin-bottom:10px;
+}
+
+.user-row{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:9px;
+}
+
+.input{
+    width:100%;
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:12px;
+    outline:none;
+    background:var(--soft);
+}
+
+.input:focus{
+    border-color:#22c55e;
+    background:var(--card);
+}
+
+.date-row{
+    display:grid;
+    grid-template-columns:1fr 72px;
+    gap:8px;
+    margin-top:9px;
+}
+
+.btn{
+    border-radius:12px;
+    padding:11px 13px;
+    font-weight:bold;
+    transition:.15s;
+}
+
+.btn:active{
+    transform:scale(.97);
+}
+
+.btn-green{
+    background:#22c55e;
+    color:white;
+}
+
+.btn-dark{
+    background:#0f172a;
+    color:white;
+}
+
+.btn-light{
+    background:var(--soft);
+    color:var(--light-button-text);
+}
+
+.btn-danger{
+    background:#fee2e2;
+    color:var(--danger-text);
+}
+
+.motivation{
+    background:linear-gradient(135deg,#dcfce7,#ecfdf5);
+    border:1px solid #bbf7d0;
+    border-radius:18px;
+    padding:15px;
+    margin-bottom:14px;
+}
+
+.motivation-title{
+    font-size:12px;
+    font-weight:bold;
+    color:var(--motivation-title);
+    margin-bottom:5px;
+}
+
+.motivation-text{
+    font-size:14px;
+    line-height:1.45;
+    color:var(--motivation-text);
+}
+
+.summary{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:9px;
+}
+
+.summary-item{
+    background:var(--soft);
+    border-radius:14px;
+    padding:12px;
+}
+
+.summary-label{
+    font-size:11px;
+    color:var(--muted);
+}
+
+.summary-value{
+    font-size:20px;
+    font-weight:bold;
+    margin-top:3px;
+}
+
+.summary-value small{
+    font-size:11px;
+    font-weight:normal;
+    color:var(--muted);
+}
+
+.goal-row{
+    display:grid;
+    grid-template-columns:1fr 100px;
+    gap:8px;
+    align-items:center;
+}
+
+.progress{
+    height:11px;
+    background:var(--soft);
+    border-radius:20px;
+    overflow:hidden;
+    margin-top:10px;
+}
+
+.progress-bar{
+    height:100%;
+    width:0%;
+    background:#22c55e;
+    border-radius:20px;
+    transition:.35s;
+}
+
+.goal-info{
+    display:flex;
+    justify-content:space-between;
+    font-size:11px;
+    color:var(--muted);
+    margin-top:6px;
+}
+
+.search{
+    margin-bottom:10px;
+}
+
+/* =========================
+   5 NÍVEIS DE CALORIAS
+========================= */
+
+.levels{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:5px;
+    margin-bottom:12px;
+}
+
+.level{
+    border-radius:11px;
+    padding:8px 2px;
+    background:var(--soft);
+    text-align:center;
+    font-size:8px;
+    font-weight:bold;
+    color:var(--level-text);
+    border:1px solid transparent;
+    min-height:58px;
+}
+
+.level strong{
+    display:block;
+    font-size:15px;
+    margin-bottom:3px;
+}
+
+.level small{
+    display:block;
+    font-size:7px;
+    margin-top:3px;
+    font-weight:normal;
+}
+
+.level.active{
+    background:#dcfce7;
+    border-color:#22c55e;
+    color:var(--level-active-text);
+}
+
+.food-list{
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+    max-height:330px;
+    overflow-y:auto;
+    padding-right:2px;
+}
+
+.food{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:8px;
+    background:var(--soft);
+    border:1px solid var(--border);
+    border-radius:13px;
+    padding:10px;
+}
+
+.food-info{
+    min-width:0;
+}
+
+.food-name{
+    font-size:13px;
+    font-weight:bold;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.food-meta{
+    font-size:10px;
+    color:var(--muted);
+    margin-top:3px;
+}
+
+.food-cal{
+    font-weight:bold;
+    color:var(--green-text);
+}
+
+.add-food{
+    width:35px;
+    height:35px;
+    border-radius:10px;
+    background:#dcfce7;
+    color:var(--green-text);
+    font-size:20px;
+    flex-shrink:0;
+}
+
+.selected{
+    display:none;
+    background:#f0fdf4;
+    border:1px solid #bbf7d0;
+    border-radius:14px;
+    padding:12px;
+    margin-top:12px;
+}
+
+.selected-name{
+    font-weight:bold;
+    font-size:14px;
+}
+
+.selected-info{
+    font-size:11px;
+    color:var(--muted);
+    margin-top:4px;
+}
+
+.gram-row{
+    display:grid;
+    grid-template-columns:1fr 105px;
+    gap:8px;
+    margin-top:9px;
+}
+
+.meal{
+    width:100%;
+    border:1px solid var(--border);
+    background:var(--card);
+    border-radius:12px;
+    padding:11px;
+}
+
+.add-row{
+    display:grid;
+    grid-template-columns:1fr 110px;
+    gap:8px;
+    margin-top:8px;
+}
+
+.meal-block{
+    margin-bottom:14px;
+}
+
+.meal-title{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size:13px;
+    font-weight:bold;
+    margin-bottom:7px;
+}
+
+.meal-total{
+    font-size:11px;
+    color:var(--muted);
+}
+
+.entry{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    background:var(--soft);
+    border-radius:11px;
+    padding:9px;
+    margin-bottom:5px;
+}
+
+.entry-name{
+    font-size:12px;
+    font-weight:bold;
+}
+
+.entry-meta{
+    font-size:10px;
+    color:var(--muted);
+    margin-top:3px;
+}
+
+.remove{
+    width:30px;
+    height:30px;
+    border-radius:9px;
+    background:#fee2e2;
+    color:var(--danger-text);
+}
+
+
+.add-food-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    margin-bottom:10px;
+}
+
+.add-food-header .card-title{
+    margin-bottom:0;
+}
+
+.btn-add-base{
+    background:#22c55e;
+    color:white;
+    padding:9px 11px;
+    border-radius:11px;
+    font-size:11px;
+    font-weight:bold;
+    white-space:nowrap;
+}
+
+.custom-badge{
+    display:inline-block;
+    margin-left:5px;
+    padding:2px 5px;
+    border-radius:6px;
+    background:#dcfce7;
+    color:var(--green-text);
+    font-size:8px;
+    font-weight:bold;
+}
+
+.custom-food-delete{
+    width:30px;
+    height:30px;
+    border-radius:9px;
+    background:#fee2e2;
+    color:var(--danger-text);
+    font-size:15px;
+    margin-left:4px;
+}
+
+.food-buttons{
+    display:flex;
+    align-items:center;
+}
+
+.modal-backdrop{
+    position:fixed;
+    inset:0;
+    background:rgba(2,6,23,.68);
+    display:none;
+    align-items:flex-end;
+    justify-content:center;
+    z-index:9999;
+    padding:12px;
+}
+
+.modal-backdrop.show{
+    display:flex;
+}
+
+.food-modal{
+    width:min(100%,480px);
+    background:var(--app);
+    color:var(--text);
+    border-radius:22px;
+    padding:17px;
+    box-shadow:0 18px 60px rgba(0,0,0,.35);
+    animation:modalUp .18s ease-out;
+}
+
+@keyframes modalUp{
+    from{transform:translateY(20px);opacity:0}
+    to{transform:translateY(0);opacity:1}
+}
+
+.modal-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:5px;
+}
+
+.modal-close{
+    width:32px;
+    height:32px;
+    border-radius:10px;
+    background:var(--soft);
+    color:var(--text);
+    font-size:18px;
+}
+
+.modal-sub{
+    color:var(--muted);
+    font-size:10px;
+    line-height:1.4;
+    margin-bottom:13px;
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+}
+
+.form-grid .full{
+    grid-column:1/-1;
+}
+
+.modal-actions{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+    margin-top:12px;
+}
+
+@media(max-width:360px){
+    .btn-add-base{
+        font-size:10px;
+        padding:8px 9px;
+    }
+}
+
+.history{
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+}
+
+.history-item{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:var(--soft);
+    border-radius:12px;
+    padding:11px;
+    cursor:pointer;
+}
+
+.history-date{
+    font-size:12px;
+    font-weight:bold;
+}
+
+.history-info{
+    text-align:right;
+    font-size:11px;
+    color:var(--muted);
+}
+
+.empty{
+    text-align:center;
+    padding:20px 10px;
+    color:var(--muted);
+    font-size:12px;
+}
+
+.actions{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+}
+
+
+.back-home{
+    width:100%;
+    margin-top:12px;
+    background:var(--soft);
+    color:var(--text);
+    border:1px solid var(--border);
+}
+
+.backup-actions{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+}
+
+.backup-note{
+    font-size:11px;
+    color:var(--muted);
+    line-height:1.45;
+    margin-top:9px;
+}
+
+.footer{
+    text-align:center;
+    color:var(--muted);
+    font-size:10px;
+    padding:5px 20px;
+}
+
+.toast{
+    position:fixed;
+    left:50%;
+    bottom:20px;
+    transform:translateX(-50%) translateY(100px);
+    background:#0f172a;
+    color:white;
+    padding:12px 16px;
+    border-radius:13px;
+    font-size:12px;
+    opacity:0;
+    transition:.25s;
+    z-index:999;
+    max-width:90%;
+    text-align:center;
+}
+
+.toast.show{
+    transform:translateX(-50%) translateY(0);
+    opacity:1;
+}
+
+.appear{
+    animation:appear .25s ease;
+}
+
+@keyframes appear{
+    from{
+        opacity:0;
+        transform:translateY(5px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+@media(max-width:420px){
+
+    .content{
+        padding:12px;
+    }
+
+    .levels{
+        gap:3px;
+    }
+
+    .level{
+        font-size:7px;
+        padding:7px 1px;
+    }
+
+    .level strong{
+        font-size:13px;
+    }
+
+    .level small{
+        font-size:6px;
+    }
+
+    .summary-value{
+        font-size:18px;
+    }
+}
+
+
+.theme-btn{
+    position:absolute;
+    top:16px;
+    right:16px;
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    background:rgba(255,255,255,.12);
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:20px;
+    border:1px solid rgba(255,255,255,.12);
+}
+.theme-btn:active{transform:scale(.94);}
+
+.analytics-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+}
+.analytics-item{
+    background:var(--soft);
+    border-radius:13px;
+    padding:11px;
+    border:1px solid var(--border);
+}
+.analytics-label{
+    font-size:9px;
+    color:var(--muted);
+    text-transform:uppercase;
+}
+.analytics-value{
+    font-size:16px;
+    font-weight:bold;
+    margin-top:4px;
+}
+.analytics-sub{
+    font-size:9px;
+    color:var(--muted);
+    margin-top:3px;
+}
+.period-title{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:10px;
+}
+.period-title span:last-child{
+    font-size:9px;
+    color:var(--muted);
+    font-weight:normal;
+}
+.weight-box{
+    background:var(--soft);
+    border-radius:14px;
+    padding:12px;
+    margin-top:10px;
+}
+.weight-row{
+    display:grid;
+    grid-template-columns:1fr 105px;
+    gap:8px;
+}
+.weight-history{
+    margin-top:9px;
+    font-size:10px;
+    color:var(--muted);
+    line-height:1.6;
+}
+.change-good{font-weight:bold;}
+
+
+.share-card{
+    border:1px solid var(--border);
+}
+.share-sub{
+    font-size:10px;
+    color:var(--muted);
+    line-height:1.45;
+    margin:-4px 0 11px;
+}
+.share-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+}
+.share-date-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+    margin:9px 0;
+}
+.share-date-label{
+    display:block;
+    font-size:9px;
+    color:var(--muted);
+    margin-bottom:4px;
+}
+.share-actions{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+    margin-top:8px;
+}
+.share-preview{
+    display:none;
+    margin-top:10px;
+    background:var(--soft);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:10px;
+}
+.share-preview.show{
+    display:block;
+}
+.share-preview-title{
+    font-size:10px;
+    font-weight:bold;
+    margin-bottom:6px;
+}
+.share-output{
+    width:100%;
+    min-height:145px;
+    resize:vertical;
+    box-sizing:border-box;
+    border:0;
+    outline:0;
+    border-radius:9px;
+    padding:9px;
+    background:transparent;
+    color:var(--text);
+    font:10px/1.5 Arial,sans-serif;
+}
+.share-mode{
+    border:1px solid var(--border);
+    background:var(--soft);
+    color:var(--text);
+    border-radius:10px;
+    padding:9px 6px;
+    font-size:10px;
+    font-weight:bold;
+}
+.share-mode.active{
+    background:#16a34a;
+    color:#fff;
+    border-color:#16a34a;
+}
+.share-note{
+    font-size:9px;
+    color:var(--muted);
+    margin-top:7px;
+    text-align:center;
+}
+@media(max-width:420px){
+    .share-grid,.share-date-row,.share-actions{
+        gap:6px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<header class="header">
+
+    <div class="brand">
+
+        <div class="logo">
+            🌱
+        </div>
+
+        <div>
+            <h1>NutriTrack</h1>
+            <p>Seu diário alimentar, um dia de cada vez.</p>
+        </div>
+
+    </div>
+
+    <button id="temaBtn" class="theme-btn" aria-label="Alternar tema" title="Alternar tema" type="button">☀️</button>
+
+</header>
+
+<main class="content">
+
+<section class="card">
+
+    <div class="card-title">
+        👤 Seu perfil
+    </div>
+
+    <div class="user-row">
+
+        <input
+            id="nome"
+            class="input"
+            type="text"
+            placeholder="Como podemos chamar você?"
+        >
+
+        <div class="date-row">
+
+            <input
+                id="data"
+                class="input"
+                type="date"
+            >
+
+            <button
+                class="btn btn-dark"
+                id="hojeBtn"
+             type="button">
+                HOJE
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+<section class="motivation">
+
+    <div class="motivation-title">
+        💚 UM LEMBRETE PARA VOCÊ
+    </div>
+
+    <div
+        class="motivation-text"
+        id="mensagemMotivacional"
+    >
+        Cada pequena escolha conta.
+    </div>
+
+</section>
+
+<section class="card">
+
+    <div class="card-title">
+        📊 Seu dia
+    </div>
+
+    <div class="summary">
+
+        <div class="summary-item">
+            <div class="summary-label">
+                CALORIAS
+            </div>
+
+            <div class="summary-value">
+                <span id="totalKcal">0</span>
+                <small>kcal</small>
+            </div>
+        </div>
+
+        <div class="summary-item">
+            <div class="summary-label">
+                PROTEÍNA
+            </div>
+
+            <div class="summary-value">
+                <span id="totalP">0</span>
+                <small>g</small>
+            </div>
+        </div>
+
+        <div class="summary-item">
+            <div class="summary-label">
+                CARBOIDRATOS
+            </div>
+
+            <div class="summary-value">
+                <span id="totalC">0</span>
+                <small>g</small>
+            </div>
+        </div>
+
+        <div class="summary-item">
+            <div class="summary-label">
+                GORDURAS
+            </div>
+
+            <div class="summary-value">
+                <span id="totalG">0</span>
+                <small>g</small>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+<section class="card">
+
+    <div class="card-title">
+        🎯 Meta diária de calorias
+    </div>
+
+    <div class="goal-row">
+
+        <input
+            id="meta"
+            class="input"
+            type="number"
+            min="1"
+            value="2000"
+        >
+
+        <div style="font-size:12px;color:var(--muted);">
+            kcal/dia
+        </div>
+
+    </div>
+
+    <div class="progress">
+
+        <div
+            id="progressBar"
+            class="progress-bar"
+        ></div>
+
+    </div>
+
+    <div class="goal-info">
+
+        <span id="goalUsed">
+            0 kcal consumidas
+        </span>
+
+        <span id="goalRemain">
+            2000 kcal restantes
+        </span>
+
+    </div>
+
+</section>
+
+<section class="card">
+    <div class="period-title">
+        <div class="card-title" style="margin-bottom:0;">📈 Resumo da semana</div>
+        <span id="semanaPeriodo"></span>
+    </div>
+    <div class="analytics-grid">
+        <div class="analytics-item">
+            <div class="analytics-label">Dias registrados</div>
+            <div class="analytics-value" id="semDias">0</div>
+            <div class="analytics-sub">de 7 dias</div>
+        </div>
+        <div class="analytics-item">
+            <div class="analytics-label">Média kcal</div>
+            <div class="analytics-value" id="semKcal">0</div>
+            <div class="analytics-sub">dias registrados</div>
+        </div>
+        <div class="analytics-item">
+            <div class="analytics-label">Proteína média</div>
+            <div class="analytics-value" id="semP">0 g</div>
+            <div class="analytics-sub">por dia registrado</div>
+        </div>
+        <div class="analytics-item">
+            <div class="analytics-label">Total kcal</div>
+            <div class="analytics-value" id="semTotalKcal">0</div>
+            <div class="analytics-sub">na semana</div>
+        </div>
+    </div>
+</section>
+
+<section class="card">
+    <div class="period-title">
+        <div class="card-title" style="margin-bottom:0;">📅 Resumo do mês</div>
+        <span id="mesPeriodo"></span>
+    </div>
+    <div class="analytics-grid">
+        <div class="analytics-item">
+            <div class="analytics-label">Dias registrados</div>
+            <div class="analytics-value" id="mesDias">0</div>
+            <div class="analytics-sub">no mês</div>
+        </div>
+        <div class="analytics-item">
+            <div class="analytics-label">Média kcal</div>
+            <div class="analytics-value" id="mesKcal">0</div>
+            <div class="analytics-sub">dias registrados</div>
+        </div>
+        <div class="analytics-item">
+            <div class="analytics-label">Proteína média</div>
+            <div class="analytics-value" id="mesP">0 g</div>
+            <div class="analytics-sub">por dia registrado</div>
+        </div>
+        <div class="analytics-item">
+            <div class="analytics-label">Total kcal</div>
+            <div class="analytics-value" id="mesTotalKcal">0</div>
+            <div class="analytics-sub">no mês</div>
+        </div>
+    </div>
+</section>
+
+<section class="card">
+    <div class="card-title">⚖️ Acompanhamento de peso</div>
+    <div style="font-size:11px;color:var(--muted);line-height:1.4;">
+        Registre seu peso na data selecionada. No resumo mensal, o app compara o primeiro e o último registro do mês.
+    </div>
+    <div class="weight-box">
+        <div style="font-size:10px;color:var(--muted);margin-bottom:7px;">
+            Peso na data selecionada
+        </div>
+        <div class="weight-row">
+            <input id="peso" class="input" type="number" min="1" step="0.1" placeholder="Ex.: 80,5">
+            <button id="salvarPesoBtn" class="btn btn-green" type="button">Salvar</button>
+        </div>
+        <div id="pesoStatus" class="weight-history"></div>
+    </div>
+    <div class="analytics-grid" style="margin-top:9px;">
+        <div class="analytics-item">
+            <div class="analytics-label">Primeiro peso</div>
+            <div class="analytics-value" id="pesoInicial">—</div>
+            <div class="analytics-sub" id="pesoInicialData">no mês</div>
+        </div>
+        <div class="analytics-item">
+            <div class="analytics-label">Último peso</div>
+            <div class="analytics-value" id="pesoFinal">—</div>
+            <div class="analytics-sub" id="pesoFinalData">no mês</div>
+        </div>
+        <div class="analytics-item" style="grid-column:1/-1;">
+            <div class="analytics-label">Variação no mês</div>
+            <div class="analytics-value" id="pesoVariacao">—</div>
+            <div class="analytics-sub" id="pesoMensagem">Registre pelo menos dois pesos no mês.</div>
+        </div>
+    </div>
+</section>
+
+<section class="card">
+
+    <div class="add-food-header">
+        <div class="card-title">🍽️ Descubra alimentos</div>
+        <button id="abrirAdicionarAlimentoBtn" class="btn-add-base" type="button">＋ Adicionar alimento</button>
+    </div>
+
+    <input
+        id="busca"
+        class="input search"
+        type="text"
+        placeholder="🔎 Procurar alimento..."
+    >
+
+    <div class="levels">
+
+        <button
+            class="level active"
+            data-level="Todos"
+         type="button">
+            <strong>✨</strong>
+            TODOS
+            <small>Todos</small>
+        </button>
+
+        <button
+            class="level"
+            data-level="1"
+         type="button">
+            <strong>🟢</strong>
+            NÍVEL 1
+            <small>até 20 kcal</small>
+        </button>
+
+        <button
+            class="level"
+            data-level="2"
+         type="button">
+            <strong>🟢</strong>
+            NÍVEL 2
+            <small>21–60 kcal</small>
+        </button>
+
+        <button
+            class="level"
+            data-level="3"
+         type="button">
+            <strong>🟡</strong>
+            NÍVEL 3
+            <small>61–100 kcal</small>
+        </button>
+
+        <button
+            class="level"
+            data-level="4"
+         type="button">
+            <strong>🟠</strong>
+            NÍVEL 4
+            <small>101–200 kcal</small>
+        </button>
+
+    </div>
+
+    <div
+        style="
+        background:#fee2e2;
+        color:var(--danger-text);
+        border-radius:10px;
+        padding:8px;
+        font-size:10px;
+        margin-bottom:10px;
+        text-align:center;
+        "
+    >
+        🔴 <b>NÍVEL 5</b> — 200+ kcal por 100g
+    </div>
+
+    <div
+        id="foodList"
+        class="food-list"
+    ></div>
+
+    <div
+        id="selected"
+        class="selected"
+    >
+
+        <div
+            id="selectedName"
+            class="selected-name"
+        ></div>
+
+        <div
+            id="selectedInfo"
+            class="selected-info"
+        ></div>
+
+        <div class="gram-row">
+
+            <input
+                id="gramas"
+                class="input"
+                type="number"
+                min="1"
+                value="100"
+                placeholder="Gramas"
+            >
+
+            <select
+                id="refeicao"
+                class="meal"
+            >
+
+                <option value="cafe">
+                    ☀️ Café
+                </option>
+
+                <option value="almoco">
+                    🍛 Almoço
+                </option>
+
+                <option value="lanche">
+                    🍎 Lanche
+                </option>
+
+                <option value="jantar">
+                    🌙 Jantar
+                </option>
+
+                <option value="outros">
+                    🍽️ Outros
+                </option>
+
+            </select>
+
+        </div>
+
+        <div class="add-row">
+
+            <button
+                id="adicionarBtn"
+                class="btn btn-green"
+             type="button">
+                + Adicionar alimento
+            </button>
+
+            <button
+                id="cancelarBtn"
+                class="btn btn-light"
+             type="button">
+                Cancelar
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+<section class="card">
+
+    <div class="card-title">
+        📖 Diário alimentar
+    </div>
+
+    <div id="diario"></div>
+
+</section>
+
+<section class="card">
+
+    <div class="actions">
+
+        <button
+            id="salvarBtn"
+            class="btn btn-green"
+         type="button">
+            💾 Salvar dia
+        </button>
+
+        <button
+            id="limparBtn"
+            class="btn btn-danger"
+         type="button">
+            🗑️ Limpar dia
+        </button>
+
+    </div>
+
+</section>
+
+
+<section class="card share-card">
+
+    <div class="card-title">
+        📤 Compartilhar resumo
+    </div>
+
+    <div class="share-sub">
+        Gere um resumo simples para enviar a um amigo, guardar em outro app ou colar em uma IA.
+    </div>
+
+    <div class="share-grid">
+        <button id="resumoDiaBtn" class="share-mode active" type="button">
+            📅 Resumo do dia
+        </button>
+
+        <button id="resumoPeriodoBtn" class="share-mode" type="button">
+            📊 Resumo por período
+        </button>
+    </div>
+
+    <div id="periodoResumoCampos" style="display:none;">
+        <div class="share-date-row">
+            <div>
+                <label class="share-date-label" for="resumoDataInicio">Data inicial</label>
+                <input id="resumoDataInicio" class="input" type="date">
+            </div>
+            <div>
+                <label class="share-date-label" for="resumoDataFim">Data final</label>
+                <input id="resumoDataFim" class="input" type="date">
+            </div>
+        </div>
+    </div>
+
+    <div class="share-actions">
+        <button id="gerarResumoBtn" class="btn btn-dark" type="button">
+            ✨ Gerar resumo
+        </button>
+
+        <button id="copiarResumoBtn" class="btn btn-green" type="button">
+            📋 Copiar resumo
+        </button>
+    </div>
+
+    <button id="compartilharResumoBtn" class="btn btn-light" type="button" style="width:100%;margin-top:8px;">
+        📲 Compartilhar
+    </button>
+
+    <div id="resumoPreview" class="share-preview">
+        <div class="share-preview-title">
+            Prévia do resumo
+        </div>
+        <textarea id="resumoOutput" class="share-output" readonly></textarea>
+    </div>
+
+    <div class="share-note">
+        O resumo usa somente os dados registrados no FITPRO neste dispositivo.
+    </div>
+
+</section>
+
+<section class="card">
+
+    <div class="card-title">
+        📅 Histórico
+    </div>
+
+    <div
+        id="historico"
+        class="history"
+    ></div>
+
+    <button
+        id="homeBtn"
+        class="btn back-home"
+        type="button"
+    >
+        ⌂ Voltar ao topo
+    </button>
+
+</section>
+
+<section class="card">
+
+    <div class="card-title">
+        📦 Backup dos dados
+    </div>
+
+    <div class="backup-actions">
+
+        <button
+            id="exportarBtn"
+            class="btn btn-dark"
+            type="button"
+        >
+            📤 Exportar dados
+        </button>
+
+        <button
+            id="importarBtn"
+            class="btn btn-green"
+            type="button"
+        >
+            📥 Importar dados
+        </button>
+
+    </div>
+
+    <input
+        id="arquivoImportacao"
+        type="file"
+        accept="application/json,.json"
+        style="display:none"
+    >
+
+    <div class="backup-note">
+        O backup é salvo em formato JSON e pode restaurar os dados do NutriTrack neste ou em outro navegador.
+    </div>
+
+</section>
+
+<div class="footer">
+    NutriTrack • Consistência antes da perfeição 💚
+</div>
+
+</main>
+
+</div>
+
+<div
+    id="toast"
+    class="toast"
+></div>
+
+
+<!-- =========================================================
+     MODAL — ADICIONAR ALIMENTO À BASE
+========================================================= -->
+<div id="alimentoModal" class="modal-backdrop" aria-hidden="true">
+    <div class="food-modal" role="dialog" aria-modal="true" aria-labelledby="modalAlimentoTitulo">
+        <div class="modal-head">
+            <div id="modalAlimentoTitulo" class="card-title" style="margin:0;">🥗 Novo alimento</div>
+            <button id="fecharAlimentoModalBtn" class="modal-close" type="button" aria-label="Fechar">×</button>
+        </div>
+        <div class="modal-sub">
+            Cadastre seu alimento e ele ficará salvo nesta instalação do NutriTrack. A informação nutricional é considerada por <b>100 g</b>.
+        </div>
+        <div class="form-grid">
+            <input id="novoAlimentoNome" class="input full" type="text" maxlength="80" placeholder="Nome do alimento">
+            <input id="novoAlimentoKcal" class="input" type="number" min="0" step="0.1" placeholder="Calorias (kcal)">
+            <input id="novoAlimentoProteina" class="input" type="number" min="0" step="0.1" placeholder="Proteína (g)">
+            <input id="novoAlimentoCarbo" class="input" type="number" min="0" step="0.1" placeholder="Carboidratos (g) — opcional">
+            <input id="novoAlimentoGordura" class="input" type="number" min="0" step="0.1" placeholder="Gorduras (g) — opcional">
+        </div>
+        <div class="modal-actions">
+            <button id="cancelarNovoAlimentoBtn" class="btn btn-light" type="button">Cancelar</button>
+            <button id="salvarNovoAlimentoBtn" class="btn btn-green" type="button">💾 Salvar alimento</button>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+/* =========================================================
+   BANCO DE ALIMENTOS
+   VALORES APROXIMADOS POR 100g OU 100ml
+   p = proteína
+   c = carboidratos
+   g = gorduras
+========================================================= */
+
+const alimentos = [
+
+/* =========================
+   VEGETAIS
+========================= */
+
+{name:"Pepino",kcal:15,p:.7,c:3.6,g:.1},
+{name:"Alface",kcal:14,p:1.4,c:2.9,g:.2},
+{name:"Rúcula",kcal:25,p:2.6,c:3.7,g:.7},
+{name:"Agrião",kcal:17,p:2.3,c:1.3,g:.1},
+{name:"Tomate",kcal:18,p:.9,c:3.9,g:.2},
+{name:"Abobrinha",kcal:17,p:1.2,c:3.1,g:.3},
+{name:"Chuchu",kcal:19,p:.7,c:4.1,g:.1},
+{name:"Repolho",kcal:25,p:1.3,c:5.8,g:.1},
+{name:"Couve-flor",kcal:25,p:1.9,c:5,g:.3},
+{name:"Brócolis",kcal:34,p:2.8,c:6.6,g:.4},
+{name:"Espinafre",kcal:23,p:2.9,c:3.6,g:.4},
+{name:"Couve",kcal:49,p:4.3,c:8.8,g:.9},
+{name:"Berinjela",kcal:25,p:1,c:6,g:.2},
+{name:"Pimentão",kcal:31,p:1,c:6,g:.3},
+{name:"Vagem",kcal:31,p:1.8,c:7,g:.1},
+{name:"Aspargos",kcal:20,p:2.2,c:3.9,g:.1},
+{name:"Cogumelo",kcal:22,p:3.1,c:3.3,g:.3},
+{name:"Rabanete",kcal:16,p:.7,c:3.4,g:.1},
+{name:"Cenoura",kcal:41,p:.9,c:9.6,g:.2},
+{name:"Abóbora",kcal:26,p:1,c:6.5,g:.1},
+{name:"Palmito",kcal:28,p:2.5,c:4.6,g:.6},
+{name:"Cebola",kcal:40,p:1.1,c:9.3,g:.1},
+{name:"Quiabo",kcal:33,p:1.9,c:7.5,g:.2},
+{name:"Acelga",kcal:19,p:1.8,c:3.7,g:.2},
+{name:"Nabo",kcal:28,p:.9,c:6.4,g:.1},
+{name:"Pepino japonês",kcal:15,p:.7,c:3.6,g:.1},
+
+/* =========================
+   FRUTAS
+========================= */
+
+{name:"Morango",kcal:32,p:.7,c:7.7,g:.3},
+{name:"Melancia",kcal:30,p:.6,c:7.6,g:.2},
+{name:"Melão",kcal:34,p:.8,c:8.2,g:.2},
+{name:"Mamão",kcal:43,p:.5,c:10.8,g:.3},
+{name:"Abacaxi",kcal:50,p:.5,c:13.1,g:.1},
+{name:"Laranja",kcal:47,p:.9,c:11.8,g:.1},
+{name:"Tangerina",kcal:53,p:.8,c:13.3,g:.3},
+{name:"Kiwi",kcal:61,p:1.1,c:14.7,g:.5},
+{name:"Maçã",kcal:52,p:.3,c:13.8,g:.2},
+{name:"Pera",kcal:57,p:.4,c:15.2,g:.1},
+{name:"Pêssego",kcal:39,p:.9,c:9.5,g:.3},
+{name:"Ameixa",kcal:46,p:.7,c:11.4,g:.3},
+{name:"Maracujá",kcal:97,p:2.2,c:23.4,g:.7},
+{name:"Goiaba",kcal:68,p:2.6,c:14.3,g:1},
+{name:"Mirtilo",kcal:57,p:.7,c:14.5,g:.3},
+{name:"Framboesa",kcal:52,p:1.2,c:11.9,g:.7},
+{name:"Amora",kcal:43,p:1.4,c:9.6,g:.5},
+{name:"Carambola",kcal:31,p:1,c:6.7,g:.3},
+{name:"Pitaya",kcal:50,p:1.1,c:11,g:.4},
+{name:"Acerola",kcal:32,p:.4,c:7.7,g:.3},
+{name:"Banana",kcal:89,p:1.1,c:22.8,g:.3},
+{name:"Uva",kcal:69,p:.7,c:18.1,g:.2},
+{name:"Manga",kcal:60,p:.8,c:15,g:.4},
+{name:"Abacate",kcal:160,p:2,c:8.5,g:14.7},
+{name:"Coco fresco",kcal:354,p:3.3,c:15.2,g:33.5},
+{name:"Caqui",kcal:70,p:.6,c:18.6,g:.2},
+{name:"Figo",kcal:74,p:.8,c:19.2,g:.3},
+
+/* =========================
+   BOVINAS
+========================= */
+
+{name:"Patinho",kcal:219,p:35,c:0,g:8},
+{name:"Coxão mole",kcal:219,p:32,c:0,g:9},
+{name:"Coxão duro",kcal:210,p:31,c:0,g:8},
+{name:"Acém",kcal:250,p:27,c:0,g:15},
+{name:"Alcatra",kcal:220,p:31,c:0,g:10},
+{name:"Contrafilé",kcal:250,p:29,c:0,g:15},
+{name:"Filé mignon",kcal:220,p:32,c:0,g:9},
+{name:"Maminha",kcal:250,p:28,c:0,g:15},
+{name:"Fraldinha",kcal:220,p:29,c:0,g:11},
+{name:"Lagarto",kcal:190,p:31,c:0,g:7},
+{name:"Carne moída magra",kcal:215,p:28,c:0,g:11},
+{name:"Carne moída comum",kcal:260,p:26,c:0,g:18},
+{name:"Picanha",kcal:290,p:26,c:0,g:21},
+{name:"Cupim",kcal:330,p:27,c:0,g:25},
+{name:"Costela bovina",kcal:350,p:25,c:0,g:28},
+{name:"Fígado bovino",kcal:175,p:26,c:4,g:5},
+{name:"Bife acebolado",kcal:220,p:27,c:5,g:10},
+{name:"Bife grelhado",kcal:220,p:30,c:0,g:10},
+{name:"Carne de panela",kcal:210,p:26,c:5,g:9},
+{name:"Carne assada",kcal:250,p:29,c:2,g:14},
+{name:"Espetinho de carne",kcal:240,p:28,c:2,g:13},
+{name:"Kafta bovina",kcal:250,p:20,c:5,g:17},
+{name:"Hambúrguer bovino caseiro",kcal:250,p:25,c:4,g:15},
+
+/* =========================
+   SUÍNAS
+========================= */
+
+{name:"Lombo suíno",kcal:190,p:27,c:0,g:8},
+{name:"Pernil suíno",kcal:210,p:27,c:0,g:10},
+{name:"Filé mignon suíno",kcal:143,p:26,c:0,g:4},
+{name:"Copa-lombo",kcal:270,p:25,c:0,g:19},
+{name:"Costela suína",kcal:320,p:25,c:0,g:24},
+{name:"Carne suína moída",kcal:250,p:26,c:0,g:17},
+{name:"Bisteca suína",kcal:230,p:27,c:0,g:13},
+{name:"Linguiça suína",kcal:300,p:16,c:2,g:25},
+{name:"Bacon",kcal:541,p:37,c:1,g:42},
+
+/* =========================
+   FRANGO
+========================= */
+
+{name:"Peito de frango sem pele",kcal:165,p:31,c:0,g:3.6},
+{name:"Peito de frango cozido",kcal:165,p:31,c:0,g:3.6},
+{name:"Peito de frango grelhado",kcal:190,p:31,c:0,g:7},
+{name:"Peito de frango assado",kcal:195,p:30,c:0,g:8},
+{name:"Coxa de frango sem pele",kcal:175,p:26,c:0,g:7},
+{name:"Sobrecoxa sem pele",kcal:180,p:25,c:0,g:8},
+{name:"Asa de frango sem pele",kcal:170,p:30,c:0,g:6},
+{name:"Fígado de frango",kcal:167,p:24,c:1,g:6},
+{name:"Coração de frango",kcal:185,p:26,c:0,g:8},
+{name:"Frango desfiado",kcal:165,p:31,c:0,g:4},
+{name:"Frango ao molho",kcal:170,p:25,c:5,g:5},
+{name:"Frango empanado",kcal:250,p:18,c:15,g:13},
+{name:"Nuggets de frango",kcal:270,p:15,c:16,g:17},
+{name:"Espetinho de frango",kcal:180,p:28,c:2,g:6},
+{name:"Hambúrguer de frango",kcal:190,p:18,c:8,g:9},
+
+/* =========================
+   AVES
+========================= */
+
+{name:"Peito de peru",kcal:135,p:29,c:1,g:2},
+{name:"Pernil de peru",kcal:150,p:29,c:0,g:3},
+{name:"Peito de pato",kcal:200,p:24,c:0,g:11},
+{name:"Chester",kcal:170,p:28,c:0,g:6},
+{name:"Peru assado",kcal:150,p:29,c:0,g:3},
+
+/* =========================
+   PEIXES
+========================= */
+
+{name:"Tilápia",kcal:128,p:26,c:0,g:2.7},
+{name:"Merluza",kcal:90,p:18,c:0,g:2},
+{name:"Pescada",kcal:100,p:20,c:0,g:2},
+{name:"Atum em água",kcal:116,p:26,c:0,g:1},
+{name:"Sardinha",kcal:208,p:25,c:0,g:11},
+{name:"Bacalhau",kcal:105,p:23,c:0,g:1},
+{name:"Salmão",kcal:208,p:20,c:0,g:13},
+{name:"Truta",kcal:148,p:21,c:0,g:6},
+{name:"Atum fresco",kcal:132,p:29,c:0,g:1},
+{name:"Peixe grelhado",kcal:140,p:25,c:0,g:4},
+{name:"Peixe empanado",kcal:220,p:17,c:15,g:10},
+
+/* =========================
+   FRUTOS DO MAR
+========================= */
+
+{name:"Camarão",kcal:99,p:24,c:.2,g:.3},
+{name:"Lula",kcal:92,p:15.6,c:3.1,g:1.4},
+{name:"Polvo",kcal:82,p:14.9,c:2.2,g:1},
+{name:"Mexilhão",kcal:86,p:12,c:3.7,g:2.2},
+{name:"Caranguejo",kcal:97,p:20,c:0,g:1.5},
+
+/* =========================
+   OVOS
+========================= */
+
+{name:"Ovo inteiro",kcal:143,p:12.6,c:.7,g:9.5},
+{name:"Clara de ovo",kcal:52,p:10.9,c:.7,g:.2},
+{name:"Gema de ovo",kcal:322,p:15.9,c:3.6,g:26.5},
+{name:"Ovo mexido",kcal:166,p:10,c:1,g:13},
+{name:"Omelete simples",kcal:160,p:11,c:2,g:11},
+{name:"Omelete com frango",kcal:180,p:20,c:2,g:9},
+
+/* =========================
+   LATICÍNIOS
+========================= */
+
+{name:"Iogurte natural desnatado",kcal:41,p:3.5,c:5.9,g:.1},
+{name:"Iogurte grego zero",kcal:59,p:10,c:3.6,g:.2},
+{name:"Cottage",kcal:98,p:11,c:3.4,g:4.3},
+{name:"Ricota",kcal:174,p:11.3,c:3,g:12.7},
+{name:"Leite desnatado",kcal:35,p:3.4,c:5,g:.1},
+{name:"Leite semidesnatado",kcal:46,p:3.2,c:4.8,g:1.5},
+{name:"Leite integral",kcal:61,p:3.2,c:4.8,g:3.3},
+{name:"Kefir",kcal:41,p:3.3,c:4.8,g:1},
+{name:"Queijo minas light",kcal:200,p:20,c:3,g:12},
+{name:"Queijo minas frescal",kcal:264,p:17,c:3,g:20},
+{name:"Mussarela",kcal:300,p:22,c:3,g:22},
+{name:"Presunto",kcal:145,p:16,c:2,g:8},
+{name:"Peito de peru fatiado",kcal:104,p:18,c:3,g:2},
+{name:"Cream cheese",kcal:342,p:6,c:4,g:34},
+{name:"Requeijão",kcal:250,p:7,c:3,g:23},
+
+/* =========================
+   LEGUMINOSAS / PROTEÍNAS
+========================= */
+
+{name:"Feijão cozido",kcal:76,p:4.8,c:13.6,g:.5},
+{name:"Feijão preto",kcal:77,p:4.5,c:14,g:.5},
+{name:"Feijão carioca",kcal:76,p:4.8,c:13.6,g:.5},
+{name:"Lentilha cozida",kcal:116,p:9,c:20,g:.4},
+{name:"Grão-de-bico cozido",kcal:164,p:8.9,c:27.4,g:2.6},
+{name:"Ervilha",kcal:81,p:5.4,c:14.5,g:.4},
+{name:"Edamame",kcal:121,p:11,c:9,g:5},
+{name:"Proteína de soja texturizada",kcal:330,p:50,c:30,g:.5},
+{name:"Proteína de soja hidratada",kcal:120,p:16,c:8,g:2},
+{name:"Soja cozida",kcal:173,p:17,c:10,g:9},
+{name:"Tofu",kcal:76,p:8,c:1.9,g:4.8},
+{name:"Tempeh",kcal:195,p:20,c:8,g:11},
+
+/* =========================
+   ARROZ / CEREAIS
+========================= */
+
+{name:"Arroz branco cozido",kcal:130,p:2.7,c:28.2,g:.3},
+{name:"Arroz integral cozido",kcal:123,p:2.7,c:25.6,g:1},
+{name:"Arroz parboilizado cozido",kcal:123,p:2.9,c:26,g:.4},
+{name:"Arroz parboilizado",kcal:123,p:2.9,c:26,g:.4},
+{name:"Arroz à grega",kcal:145,p:3,c:28,g:2},
+{name:"Arroz com legumes",kcal:125,p:2.5,c:25,g:1},
+{name:"Arroz carreteiro",kcal:170,p:8,c:25,g:5},
+{name:"Aveia",kcal:389,p:16.9,c:66.3,g:6.9},
+{name:"Quinoa cozida",kcal:120,p:4.4,c:21.3,g:1.9},
+{name:"Cuscuz de milho cozido",kcal:112,p:2.2,c:25,g:.7},
+{name:"Cuscuz nordestino",kcal:112,p:2.2,c:25,g:.7},
+{name:"Cuscuz com ovo",kcal:145,p:6,c:24,g:3},
+{name:"Tapioca",kcal:230,p:.2,c:57,g:0},
+{name:"Goma de tapioca",kcal:230,p:.2,c:57,g:0},
+{name:"Tapioca com queijo",kcal:280,p:7,c:45,g:8},
+{name:"Tapioca com frango",kcal:220,p:15,c:40,g:2},
+{name:"Pipoca sem óleo",kcal:387,p:12.9,c:77.8,g:4.5},
+{name:"Macarrão cozido",kcal:157,p:5.8,c:30.9,g:.9},
+{name:"Macarrão integral cozido",kcal:149,p:5.5,c:30,g:1.7},
+{name:"Macarrão instantâneo",kcal:450,p:9,c:60,g:18},
+{name:"Farofa",kcal:350,p:3,c:80,g:3},
+{name:"Farinha de mandioca",kcal:365,p:1.6,c:89,g:.3},
+{name:"Farinha de milho",kcal:360,p:7,c:80,g:2},
+{name:"Farinha láctea",kcal:400,p:13,c:70,g:7},
+{name:"Neston cereais",kcal:380,p:8,c:78,g:3},
+
+/* =========================
+   PÃES
+========================= */
+
+{name:"Pão francês",kcal:300,p:9,c:58,g:3},
+{name:"Pão de sal",kcal:300,p:9,c:58,g:3},
+{name:"Pão de forma",kcal:265,p:9,c:49,g:3},
+{name:"Pão integral",kcal:247,p:13,c:41,g:4},
+{name:"Pão de hambúrguer",kcal:280,p:9,c:52,g:5},
+{name:"Pão de hot dog",kcal:280,p:8,c:52,g:4},
+{name:"Pão de leite",kcal:310,p:9,c:53,g:7},
+{name:"Pão sírio",kcal:275,p:9,c:56,g:1.2},
+{name:"Torrada",kcal:400,p:11,c:75,g:6},
+{name:"Bisnaguinha",kcal:300,p:8,c:55,g:6},
+{name:"Pão de queijo",kcal:350,p:8,c:40,g:17},
+
+/* =========================
+   TUBÉRCULOS
+========================= */
+
+{name:"Batata inglesa cozida",kcal:87,p:1.9,c:20,g:.1},
+{name:"Batata inglesa assada",kcal:93,p:2.5,c:21,g:.1},
+{name:"Batata-doce cozida",kcal:86,p:1.6,c:20,g:.1},
+{name:"Batata-doce assada",kcal:90,p:2,c:21,g:.2},
+{name:"Mandioca cozida",kcal:125,p:1,c:30,g:.3},
+{name:"Inhame cozido",kcal:118,p:1.5,c:28,g:.2},
+{name:"Batata frita",kcal:312,p:3.4,c:41,g:15},
+{name:"Purê de batata",kcal:110,p:2,c:18,g:4},
+
+/* =========================
+   CARNES PREPARADAS
+========================= */
+
+{name:"Torta de carne",kcal:250,p:12,c:25,g:12},
+{name:"Torta de frango",kcal:240,p:13,c:24,g:11},
+{name:"Torta salgada de carne",kcal:260,p:12,c:25,g:14},
+{name:"Torta salgada de frango",kcal:245,p:14,c:25,g:11},
+{name:"Escondidinho de carne",kcal:180,p:10,c:20,g:7},
+{name:"Escondidinho de frango",kcal:170,p:13,c:19,g:5},
+{name:"Lasanha de carne",kcal:180,p:10,c:18,g:8},
+{name:"Lasanha de frango",kcal:170,p:11,c:18,g:7},
+{name:"Strogonoff de carne",kcal:190,p:15,c:8,g:11},
+{name:"Strogonoff de frango",kcal:170,p:17,c:7,g:8},
+{name:"Estrogonofe com arroz",kcal:190,p:10,c:25,g:6},
+{name:"Almôndega bovina",kcal:220,p:18,c:8,g:12},
+{name:"Almôndega de frango",kcal:190,p:18,c:8,g:9},
+{name:"Carne seca",kcal:250,p:40,c:0,g:9},
+
+/* =========================
+   COMIDA DO DIA A DIA
+========================= */
+
+{name:"Cachorro-quente simples",kcal:280,p:10,c:30,g:13},
+{name:"Cachorro-quente completo",kcal:330,p:12,c:35,g:17},
+{name:"Hambúrguer simples",kcal:290,p:14,c:30,g:14},
+{name:"Hambúrguer completo",kcal:300,p:15,c:32,g:15},
+{name:"X-burguer",kcal:290,p:14,c:30,g:14},
+{name:"X-salada",kcal:270,p:15,c:28,g:12},
+{name:"X-frango",kcal:260,p:18,c:28,g:10},
+{name:"X-bacon",kcal:320,p:16,c:28,g:18},
+{name:"Pizza de queijo",kcal:266,p:12,c:33,g:10},
+{name:"Pizza de frango",kcal:240,p:13,c:30,g:8},
+{name:"Pizza calabresa",kcal:290,p:13,c:30,g:13},
+{name:"Pastel de carne",kcal:300,p:11,c:32,g:15},
+{name:"Pastel de frango",kcal:285,p:12,c:32,g:13},
+{name:"Coxinha de frango",kcal:300,p:10,c:30,g:17},
+{name:"Risole de carne",kcal:290,p:9,c:32,g:15},
+{name:"Empada de frango",kcal:300,p:10,c:28,g:18},
+{name:"Enroladinho de salsicha",kcal:290,p:9,c:30,g:16},
+{name:"Kibe frito",kcal:270,p:12,c:20,g:16},
+{name:"Kibe assado",kcal:210,p:14,c:18,g:10},
+{name:"Salgado assado de frango",kcal:230,p:12,c:28,g:8},
+{name:"Esfiha de carne",kcal:230,p:10,c:28,g:8},
+{name:"Esfiha de frango",kcal:220,p:11,c:28,g:7},
+
+/* =========================
+   CAFÉS / BEBIDAS
+========================= */
+
+{name:"Café sem açúcar",kcal:2,p:.3,c:0,g:0},
+{name:"Café descafeinado",kcal:2,p:.3,c:0,g:0},
+{name:"Café com leite desnatado",kcal:35,p:2.5,c:4,g:1},
+{name:"Café com leite integral",kcal:40,p:2.2,c:4,g:2},
+{name:"Café com açúcar",kcal:35,p:.2,c:8,g:0},
+{name:"Café preto",kcal:2,p:.3,c:0,g:0},
+{name:"Chá verde sem açúcar",kcal:1,p:0,c:0,g:0},
+{name:"Chá preto sem açúcar",kcal:1,p:0,c:0,g:0},
+{name:"Chá de camomila",kcal:1,p:0,c:0,g:0},
+{name:"Água",kcal:0,p:0,c:0,g:0},
+
+/* =========================
+   REFRIGERANTES
+========================= */
+
+{name:"Coca-Cola",kcal:42,p:0,c:10.6,g:0},
+{name:"Coca-Cola Zero",kcal:0,p:0,c:0,g:0},
+{name:"Pepsi",kcal:43,p:0,c:10.7,g:0},
+{name:"Guaraná",kcal:40,p:0,c:10,g:0},
+{name:"Guaraná Zero",kcal:0,p:0,c:0,g:0},
+{name:"Fanta Laranja",kcal:40,p:0,c:10,g:0},
+{name:"Sprite",kcal:40,p:0,c:10,g:0},
+{name:"Sprite Zero",kcal:0,p:0,c:0,g:0},
+
+/* =========================
+   SUCOS
+========================= */
+
+{name:"Suco em pó preparado",kcal:20,p:0,c:5,g:0},
+{name:"Suco em pó com açúcar",kcal:40,p:0,c:10,g:0},
+{name:"Suco de polpa de maracujá",kcal:35,p:.5,c:8,g:.1},
+{name:"Suco de polpa de acerola",kcal:30,p:.5,c:7,g:.1},
+{name:"Suco de polpa de goiaba",kcal:45,p:.5,c:10,g:.1},
+{name:"Suco de polpa de morango",kcal:35,p:.5,c:8,g:.1},
+{name:"Suco de polpa de caju",kcal:40,p:.5,c:9,g:.1},
+{name:"Suco natural de laranja",kcal:45,p:.7,c:10,g:.2},
+{name:"Suco natural de limão",kcal:25,p:.4,c:6,g:.1},
+{name:"Suco natural de abacaxi",kcal:50,p:.4,c:12,g:.1},
+{name:"Suco natural de melancia",kcal:30,p:.6,c:7,g:.1},
+{name:"Suco natural de maracujá",kcal:39,p:.7,c:9,g:.2},
+
+/* =========================
+   DOCES / SOBREMESAS
+========================= */
+
+{name:"Gelatina zero",kcal:10,p:1.5,c:.5,g:0},
+{name:"Gelatina comum",kcal:60,p:1.5,c:14,g:0},
+{name:"Pudim",kcal:150,p:4,c:25,g:4},
+{name:"Brigadeiro",kcal:330,p:4,c:55,g:11},
+{name:"Beijinho",kcal:350,p:3,c:50,g:16},
+{name:"Doce de leite",kcal:315,p:5.5,c:58,g:7},
+{name:"Geleia",kcal:250,p:.4,c:65,g:.1},
+{name:"Sorvete",kcal:200,p:3.5,c:25,g:10},
+{name:"Açaí com xarope",kcal:110,p:1,c:25,g:1},
+{name:"Açaí natural",kcal:70,p:1,c:7,g:4},
+
+/* =========================
+   SEMENTES / CASTANHAS
+========================= */
+
+{name:"Chia",kcal:486,p:16.5,c:42.1,g:30.7},
+{name:"Linhaça",kcal:534,p:18.3,c:28.9,g:42.2},
+{name:"Psyllium",kcal:200,p:2,c:88,g:.6},
+{name:"Amendoim",kcal:567,p:25.8,c:16.1,g:49.2},
+{name:"Pasta de amendoim",kcal:588,p:25,c:20,g:50},
+{name:"Castanha de caju",kcal:553,p:18,c:30,g:44},
+{name:"Castanha-do-pará",kcal:659,p:14,c:12,g:67},
+{name:"Amêndoas",kcal:579,p:21,c:21.6,g:49.9},
+{name:"Nozes",kcal:654,p:15,c:14,g:65},
+
+/* =========================
+   ÓLEOS / ALIMENTOS CALÓRICOS
+========================= */
+
+{name:"Azeite de oliva",kcal:884,p:0,c:0,g:100},
+{name:"Óleo de soja",kcal:884,p:0,c:0,g:100},
+{name:"Manteiga",kcal:717,p:.9,c:.1,g:81},
+{name:"Margarina",kcal:717,p:.2,c:.7,g:81},
+{name:"Maionese",kcal:680,p:1,c:1,g:75},
+{name:"Chocolate ao leite",kcal:535,p:7.5,c:59,g:30},
+{name:"Chocolate amargo",kcal:598,p:7.8,c:45.9,g:42.6},
+{name:"Mel",kcal:304,p:.3,c:82.4,g:0},
+
+/* =========================
+   MAIS ALIMENTOS
+========================= */
+
+{name:"Ovo cozido",kcal:155,p:12.6,c:1.1,g:10.6},
+{name:"Ovo pochê",kcal:143,p:12.6,c:1.1,g:9.5},
+{name:"Feijão branco cozido",kcal:139,p:9.7,c:25.1,g:.4},
+{name:"Feijão fradinho cozido",kcal:116,p:7.7,c:20.7,g:.5},
+{name:"Soja cozida",kcal:173,p:16.6,c:9.9,g:9},
+{name:"Batata-baroa cozida",kcal:80,p:.9,c:18.9,g:.2},
+{name:"Mandioquinha cozida",kcal:80,p:.9,c:18.9,g:.2},
+{name:"Cará cozido",kcal:118,p:1.5,c:27.5,g:.2},
+{name:"Batata yacon",kcal:33,p:.5,c:8.4,g:.1},
+{name:"Arroz vermelho cozido",kcal:123,p:2.7,c:25.6,g:1},
+{name:"Arroz negro cozido",kcal:145,p:3.5,c:31,g:1},
+{name:"Trigo para quibe cozido",kcal:83,p:3.1,c:18.6,g:.2},
+{name:"Pão sírio",kcal:275,p:9.1,c:55,g:1.2},
+{name:"Pão de hambúrguer",kcal:275,p:9,c:51,g:4.5},
+{name:"Pão de forma light",kcal:230,p:10,c:43,g:2.8},
+{name:"Crepioca",kcal:180,p:8,c:22,g:7},
+{name:"Panqueca de banana",kcal:170,p:6,c:24,g:5},
+{name:"Mingau de aveia",kcal:95,p:3.2,c:14,g:3},
+{name:"Barra de cereal",kcal:380,p:6,c:72,g:8},
+{name:"Queijo minas frescal",kcal:264,p:17,c:3,g:20},
+{name:"Queijo coalho",kcal:330,p:23,c:3,g:25},
+{name:"Iogurte skyr",kcal:63,p:11,c:4,g:.2},
+{name:"Leite de amêndoas sem açúcar",kcal:15,p:.6,c:.3,g:1.2},
+{name:"Tapioca com ovo",kcal:180,p:6,c:30,g:5},
+{name:"Carne de panela",kcal:220,p:27,c:5,g:10},
+{name:"Bife acebolado",kcal:240,p:29,c:4,g:11},
+{name:"Peixe assado",kcal:150,p:27,c:0,g:5},
+{name:"Frango com legumes",kcal:135,p:18,c:7,g:4},
+{name:"Salada de atum",kcal:120,p:18,c:5,g:3},
+{name:"Cuscuz paulista",kcal:180,p:6,c:25,g:6},
+
+];
+
+
+/* =========================================================
+   ARMAZENAMENTO SEGURO
+========================================================= */
+function lerJSONStorage(chave, padrao){
+    try{ const bruto=localStorage.getItem(chave); if(!bruto) return padrao; return JSON.parse(bruto) ?? padrao; }
+    catch(e){ console.warn("FITPRO: armazenamento inválido", chave, e); return padrao; }
+}
+function salvarJSONStorage(chave, valor){
+    try{ localStorage.setItem(chave, JSON.stringify(valor)); return true; }
+    catch(e){ console.error("FITPRO: erro ao salvar", chave, e); toast("Não foi possível salvar os dados. Faça um backup JSON."); return false; }
+}
+
+/* =========================================================
+   ESTADO
+========================================================= */
+
+let dataAtual = hoje();
+
+let selecionado = null;
+
+let nivelAtual = "Todos";
+
+let historico = lerJSONStorage("nutri_historico", {});
+if(!historico || typeof historico !== "object" || Array.isArray(historico)) historico = {};
+
+let meta =
+    Number(
+        localStorage.getItem("nutri_meta") || 2000
+    );
+
+/* =========================================================
+   ALIMENTOS PERSONALIZADOS
+   A base original nunca é removida.
+========================================================= */
+let alimentosPersonalizados = lerJSONStorage("nutri_alimentos_personalizados", []);
+if(!Array.isArray(alimentosPersonalizados)) alimentosPersonalizados = [];
+
+function salvarAlimentosPersonalizados(){ return salvarJSONStorage("nutri_alimentos_personalizados", alimentosPersonalizados); }
+
+function listaCompletaAlimentos(){
+    return alimentos.concat(alimentosPersonalizados);
+}
+
+
+
+/* =========================================================
+   UTILITÁRIOS
+========================================================= */
+
+function $(id){
+    return document.getElementById(id);
+}
+
+
+function hoje(){
+
+    const d = new Date();
+
+    return (
+        d.getFullYear() +
+        "-" +
+        String(d.getMonth()+1).padStart(2,"0") +
+        "-" +
+        String(d.getDate()).padStart(2,"0")
+    );
+
+}
+
+
+function formatarData(data){
+
+    if(!data) return "";
+
+    const partes = data.split("-");
+
+    return (
+        partes[2] +
+        "/" +
+        partes[1] +
+        "/" +
+        partes[0]
+    );
+
+}
+
+
+function normalizar(txt){
+
+    return String(txt)
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g,"")
+        .toLowerCase();
+
+}
+
+
+function numero(n){
+
+    return Number(n || 0)
+        .toLocaleString("pt-BR",{
+            maximumFractionDigits:1
+        });
+
+}
+
+
+/* =========================================================
+   NOVA REGRA DOS 5 NÍVEIS
+========================================================= */
+
+function getNivel(kcal){
+
+    if(kcal <= 20){
+        return 1;
+    }
+
+    if(kcal <= 60){
+        return 2;
+    }
+
+    if(kcal <= 100){
+        return 3;
+    }
+
+    if(kcal <= 200){
+        return 4;
+    }
+
+    return 5;
+}
+
+
+/* =========================================================
+   STORAGE
+========================================================= */
+
+function salvarStorage(){ return salvarJSONStorage("nutri_historico", historico); }
+
+
+function diario(){
+
+    if(!historico[dataAtual]){
+        historico[dataAtual] = [];
+    }
+
+    return historico[dataAtual];
+
+}
+
+
+/* =========================================================
+   MENSAGENS MOTIVACIONAIS
+========================================================= */
+
+const mensagens = {
+
+    vazio:[
+
+        "Todo começo parece pequeno. Mas é assim que grandes mudanças começam. 🌱",
+
+        "Você não precisa mudar tudo hoje. Só precisa dar o próximo passo. 💚",
+
+        "Cuidar de você também é uma forma de disciplina. Comece pelo que consegue hoje.",
+
+        "Não procure um dia perfeito. Procure um dia um pouco melhor que o anterior.",
+
+        "Você está aqui tentando. E isso já significa que você não desistiu.",
+
+        "Uma escolha melhor hoje já é uma vitória.",
+
+        "Comece simples. Continue amanhã. Depois de amanhã também."
+
+    ],
+
+    progresso:[
+
+        "Boa! Você está cuidando das suas escolhas. Continue no seu ritmo. 💪",
+
+        "Olha só o que você já registrou hoje. Pequenas escolhas constroem grandes resultados.",
+
+        "Disciplina não é nunca falhar. É continuar mesmo depois de falhar. 🔥",
+
+        "Você não precisa ser perfeito. Precisa ser consistente.",
+
+        "Mais uma escolha consciente. É exatamente assim que uma rotina muda.",
+
+        "Você está construindo um hábito. Continue.",
+
+        "Não subestime uma pequena decisão repetida todos os dias."
+
+    ],
+
+    perto:[
+
+        "Você está chegando perto da sua meta. Continue com calma e consciência. 🎯",
+
+        "Muito bem! O importante não é correr, é aprender a manter o caminho.",
+
+        "Você está construindo consistência. Isso vale muito mais que um dia perfeito.",
+
+        "Respira. Observe suas escolhas. Você está no controle.",
+
+        "Você chegou até aqui. Continue mais um pouco.",
+
+        "Seu esforço de hoje pode virar o hábito que muda seu amanhã."
+
+    ],
+
+    passou:[
+
+        "Hoje passou da meta? Tudo bem. Um dia não define sua jornada. Amanhã você continua. 💚",
+
+        "Não transforme um excesso em desistência. Errou? Aprenda, ajuste e siga.",
+
+        "A disciplina também aparece depois da falha. O importante é voltar.",
+
+        "Você não perdeu seu progresso por causa de uma refeição.",
+
+        "Não existe botão de reset na vida. Existe o próximo passo.",
+
+        "Uma refeição fora da meta não apaga todos os dias anteriores.",
+
+        "Não use um erro como desculpa para abandonar seu objetivo.",
+
+        "Falhar faz parte. Permanecer parado é que não precisa fazer."
+
+    ]
+
+};
+
+
+function mensagemAleatoria(lista){
+
+    return lista[
+        Math.floor(
+            Math.random() * lista.length
+        )
+    ];
+
+}
+
+
+function atualizarMensagem(){
+
+    const total =
+        diario().reduce(
+            (s,item) =>
+                s + Number(item.kcal || 0),
+            0
+        );
+
+    let lista =
+        mensagens.vazio;
+
+    if(total === 0){
+
+        lista =
+            mensagens.vazio;
+
+    }
+    else if(total > meta){
+
+        lista =
+            mensagens.passou;
+
+    }
+    else if(total >= meta * .8){
+
+        lista =
+            mensagens.perto;
+
+    }
+    else{
+
+        lista =
+            mensagens.progresso;
+
+    }
+
+    const nome =
+        $("nome").value.trim();
+
+    let texto =
+        mensagemAleatoria(lista);
+
+    if(nome){
+
+        texto =
+            nome.split(" ")[0] +
+            ", " +
+            texto.charAt(0).toLowerCase() +
+            texto.slice(1);
+
+    }
+
+    $("mensagemMotivacional")
+        .textContent = texto;
+
+}
+
+
+/* =========================================================
+   RENDER ALIMENTOS
+========================================================= */
+
+function renderAlimentos(){
+
+    const busca =
+        normalizar(
+            $("busca").value
+        );
+
+    const lista =
+        $("foodList");
+
+    lista.innerHTML = "";
+
+    let filtrados =
+        listaCompletaAlimentos().filter(item => {
+
+            const nomeOk =
+                normalizar(item.name)
+                    .includes(busca);
+
+            const nivel =
+                getNivel(item.kcal);
+
+            const nivelOk =
+                nivelAtual === "Todos" ||
+                Number(nivelAtual) === nivel;
+
+            return nomeOk && nivelOk;
+
+        });
+
+    filtrados.sort(
+        (a,b) =>
+            a.kcal - b.kcal
+    );
+
+    if(!filtrados.length){
+
+        lista.innerHTML =
+            `
+            <div class="empty">
+                Nenhum alimento encontrado.
+            </div>
+            `;
+
+        return;
+
+    }
+
+    filtrados.forEach(item => {
+
+        const div =
+            document.createElement("div");
+
+        div.className =
+            "food appear";
+
+        div.innerHTML = `
+
+            <div class="food-info">
+
+                <div class="food-name">
+                    ${item.name}
+                    ${item.personalizado ? '<span class="custom-badge">MEU</span>' : ''}
+                </div>
+
+                <div class="food-meta">
+
+                    <span class="food-cal">
+                        ${numero(item.kcal)} kcal
+                    </span>
+
+                    por 100g •
+                    ${numero(item.p)}g proteína
+
+                </div>
+
+            </div>
+
+            <div class="food-buttons">
+                <button
+                    class="add-food"
+                    title="Adicionar"
+                    type="button"
+                >
+                    +
+                </button>
+                ${item.personalizado ? `
+                    <button class="custom-food-delete" title="Excluir alimento personalizado" type="button">×</button>
+                ` : ""}
+            </div>
+
+        `;
+
+        div
+            .querySelector(".add-food")
+            .onclick =
+            () => selecionar(item);
+
+        const apagarPersonalizado =
+            div.querySelector(".custom-food-delete");
+
+        if(apagarPersonalizado){
+            apagarPersonalizado.onclick = event => {
+                event.stopPropagation();
+
+                const primeira = confirm(
+                    "Excluir \"" + item.name + "\" da sua base personalizada?\n\nEssa ação não remove nenhum alimento original do NutriTrack."
+                );
+
+                if(!primeira) return;
+
+                const segunda = confirm(
+                    "CONFIRMAÇÃO FINAL\n\nO alimento \"" + item.name + "\" será apagado da sua base personalizada.\n\nDeseja realmente continuar?"
+                );
+
+                if(!segunda) return;
+
+                alimentosPersonalizados = alimentosPersonalizados.filter(
+                    alimento => alimento.id !== item.id
+                );
+
+                salvarAlimentosPersonalizados();
+                renderAlimentos();
+                toast("Alimento personalizado removido.");
+            };
+        }
+
+        lista.appendChild(div);
+
+    });
+
+}
+
+
+/* =========================================================
+   NÍVEIS
+========================================================= */
+
+document
+    .querySelectorAll(".level")
+    .forEach(btn => {
+
+        btn.addEventListener(
+            "click",
+            () => {
+
+                document
+                    .querySelectorAll(".level")
+                    .forEach(b =>
+                        b.classList
+                         .remove("active")
+                    );
+
+                btn.classList
+                    .add("active");
+
+                nivelAtual =
+                    btn.dataset.level;
+
+                renderAlimentos();
+
+            }
+        );
+
+    });
+
+
+/* =========================================================
+   SELECIONAR
+========================================================= */
+
+function selecionar(item){
+
+    selecionado =
+        item;
+
+    $("selected")
+        .style.display =
+        "block";
+
+    $("selectedName")
+        .textContent =
+        item.name;
+
+    $("selectedInfo")
+        .textContent =
+        numero(item.kcal) +
+        " kcal • " +
+        numero(item.p) +
+        "g proteína • " +
+        numero(item.c) +
+        "g carboidratos • " +
+        numero(item.g) +
+        "g gordura / 100g";
+
+    $("gramas").value =
+        100;
+
+    $("gramas").focus();
+
+    $("selected")
+        .scrollIntoView({
+            behavior:"smooth",
+            block:"nearest"
+        });
+
+}
+
+
+/* =========================================================
+   CANCELAR
+========================================================= */
+
+$("cancelarBtn").onclick = () => {
+
+    selecionado =
+        null;
+
+    $("selected")
+        .style.display =
+        "none";
+
+};
+
+
+/* =========================================================
+   ADICIONAR
+========================================================= */
+
+$("adicionarBtn").onclick = () => {
+
+    if(!selecionado){
+
+        toast(
+            "Escolha um alimento primeiro."
+        );
+
+        return;
+
+    }
+
+    const gramas =
+        Number(
+            $("gramas").value
+        );
+
+    if(!gramas || gramas <= 0){
+
+        toast(
+            "Informe uma quantidade válida."
+        );
+
+        return;
+
+    }
+
+    const fator =
+        gramas / 100;
+
+    const item = {
+
+        id:
+            Date.now() +
+            Math.random(),
+
+        alimento:
+            selecionado.name,
+
+        refeicao:
+            $("refeicao").value,
+
+        gramas:
+            gramas,
+
+        kcal:
+            selecionado.kcal *
+            fator,
+
+        p:
+            selecionado.p *
+            fator,
+
+        c:
+            selecionado.c *
+            fator,
+
+        g:
+            selecionado.g *
+            fator
+
+    };
+
+    diario().push(item);
+
+    salvarStorage();
+
+    atualizarTudo();
+
+    selecionado =
+        null;
+
+    $("selected")
+        .style.display =
+        "none";
+
+    toast(
+        "Alimento adicionado! 💚"
+    );
+
+};
+
+
+/* =========================================================
+   REMOVER
+========================================================= */
+
+function remover(id){
+
+    const item = diario().find(
+        registro => registro.id === id
+    );
+
+    if(!item)
+        return;
+
+    const confirmar = confirm(
+        "Deseja realmente remover \"" +
+        item.nome +
+        "\" deste dia?\n\nEssa ação não poderá ser desfeita."
+    );
+
+    if(!confirmar)
+        return;
+
+    historico[dataAtual] =
+        diario().filter(
+            item =>
+                item.id !== id
+        );
+
+    salvarStorage();
+
+    atualizarTudo();
+
+    toast(
+        "Alimento removido."
+    );
+
+}
+
+
+/* =========================================================
+   REFEIÇÕES
+========================================================= */
+
+const refeicoes = {
+
+    cafe:{
+        nome:"☀️ Café da manhã"
+    },
+
+    almoco:{
+        nome:"🍛 Almoço"
+    },
+
+    lanche:{
+        nome:"🍎 Lanche"
+    },
+
+    jantar:{
+        nome:"🌙 Jantar"
+    },
+
+    outros:{
+        nome:"🍽️ Outros"
+    }
+
+};
+
+
+/* =========================================================
+   DIÁRIO
+========================================================= */
+
+function renderDiario(){
+
+    const container =
+        $("diario");
+
+    container.innerHTML =
+        "";
+
+    const itens =
+        diario();
+
+    if(!itens.length){
+
+        container.innerHTML =
+            `
+            <div class="empty">
+
+                Nenhum alimento registrado hoje.<br>
+
+                Que tal começar com uma
+                escolha simples? 🌱
+
+            </div>
+            `;
+
+        return;
+
+    }
+
+    Object.keys(refeicoes)
+        .forEach(tipo => {
+
+            const lista =
+                itens.filter(
+                    item =>
+                        item.refeicao ===
+                        tipo
+                );
+
+            if(!lista.length)
+                return;
+
+            const bloco =
+                document.createElement(
+                    "div"
+                );
+
+            bloco.className =
+                "meal-block appear";
+
+            const total =
+                lista.reduce(
+                    (s,item) =>
+                        s +
+                        Number(
+                            item.kcal
+                        ),
+                    0
+                );
+
+            bloco.innerHTML = `
+
+                <div class="meal-title">
+
+                    <span>
+                        ${refeicoes[tipo].nome}
+                    </span>
+
+                    <span class="meal-total">
+                        ${numero(total)} kcal
+                    </span>
+
+                </div>
+
+            `;
+
+            lista.forEach(item => {
+
+                const entry =
+                    document.createElement(
+                        "div"
+                    );
+
+                entry.className =
+                    "entry";
+
+                entry.innerHTML = `
+
+                    <div>
+
+                        <div class="entry-name">
+                            ${item.alimento}
+                        </div>
+
+                        <div class="entry-meta">
+
+                            ${numero(item.gramas)}g •
+                            ${numero(item.kcal)} kcal •
+                            ${numero(item.p)}g proteína
+
+                        </div>
+
+                    </div>
+
+                    <button
+                        class="remove"
+                        title="Remover"
+                     type="button">
+                        ×
+                    </button>
+
+                `;
+
+                entry
+                    .querySelector(".remove")
+                    .onclick =
+                    () =>
+                        remover(item.id);
+
+                bloco.appendChild(entry);
+
+            });
+
+            container.appendChild(
+                bloco
+            );
+
+        });
+
+}
+
+
+/* =========================================================
+   RESUMO
+========================================================= */
+
+function atualizarResumo(){
+
+    const itens =
+        diario();
+
+    const totais =
+        itens.reduce(
+            (s,item) => {
+
+                s.kcal +=
+                    Number(
+                        item.kcal || 0
+                    );
+
+                s.p +=
+                    Number(
+                        item.p || 0
+                    );
+
+                s.c +=
+                    Number(
+                        item.c || 0
+                    );
+
+                s.g +=
+                    Number(
+                        item.g || 0
+                    );
+
+                return s;
+
+            },
+            {
+                kcal:0,
+                p:0,
+                c:0,
+                g:0
+            }
+        );
+
+    $("totalKcal")
+        .textContent =
+        numero(totais.kcal);
+
+    $("totalP")
+        .textContent =
+        numero(totais.p);
+
+    $("totalC")
+        .textContent =
+        numero(totais.c);
+
+    $("totalG")
+        .textContent =
+        numero(totais.g);
+
+    const porcentagem =
+        Math.min(
+            (
+                totais.kcal /
+                meta
+            ) * 100,
+            100
+        );
+
+    $("progressBar")
+        .style.width =
+        porcentagem + "%";
+
+    $("goalUsed")
+        .textContent =
+        numero(totais.kcal) +
+        " kcal consumidas";
+
+    const restante =
+        meta -
+        totais.kcal;
+
+    if(restante >= 0){
+
+        $("goalRemain")
+            .textContent =
+            numero(restante) +
+            " kcal restantes";
+
+    }
+    else{
+
+        $("goalRemain")
+            .textContent =
+            numero(
+                Math.abs(restante)
+            ) +
+            " kcal acima da meta";
+
+    }
+
+}
+
+
+/* =========================================================
+   HISTÓRICO
+========================================================= */
+
+function renderHistorico(){
+
+    const container =
+        $("historico");
+
+    container.innerHTML =
+        "";
+
+    const datas =
+        Object.keys(historico)
+        .filter(
+            data =>
+                historico[data] &&
+                historico[data].length
+        )
+        .sort(
+            (a,b) =>
+                b.localeCompare(a)
+        );
+
+    if(!datas.length){
+
+        container.innerHTML =
+            `
+            <div class="empty">
+                Seu histórico aparecerá aqui.
+            </div>
+            `;
+
+        return;
+
+    }
+
+    datas.forEach(data => {
+
+        const itens =
+            historico[data];
+
+        const kcal =
+            itens.reduce(
+                (s,item) =>
+                    s +
+                    Number(
+                        item.kcal || 0
+                    ),
+                0
+            );
+
+        const div =
+            document.createElement(
+                "div"
+            );
+
+        div.className =
+            "history-item";
+
+        div.innerHTML = `
+
+            <div class="history-date">
+                📅 ${formatarData(data)}
+            </div>
+
+            <div class="history-info">
+
+                ${numero(kcal)} kcal<br>
+
+                ${itens.length}
+                alimento(s)
+
+            </div>
+
+        `;
+
+        div.onclick = () => {
+
+            dataAtual =
+                data;
+
+            $("data").value =
+                dataAtual;
+
+            atualizarTudo();
+
+            window.scrollTo({
+                top:0,
+                behavior:"smooth"
+            });
+
+            toast(
+                "Dia " +
+                formatarData(data) +
+                " carregado."
+            );
+
+        };
+
+        container.appendChild(
+            div
+        );
+
+    });
+
+}
+
+
+/* =========================================================
+   TEMA / MODO NOTURNO E DIURNO
+========================================================= */
+
+function aplicarTema(){
+    let tema = "dark";
+    try{ tema = localStorage.getItem("nutri_tema") || "dark"; }catch(e){}
+    const claro = tema === "light";
+
+    // Aplicamos o tema no HTML e no BODY para garantir
+    // funcionamento consistente em Chrome, Safari e iPhone.
+    document.documentElement.classList.toggle("light", claro);
+    document.body.classList.toggle("light", claro);
+    document.documentElement.dataset.theme = tema;
+    document.body.dataset.theme = tema;
+
+    // Atualiza a cor da barra do navegador/Safari no celular.
+    const metaTheme = document.querySelector('meta[name="theme-color"]');
+    if(metaTheme){
+        metaTheme.setAttribute("content", claro ? "#f8fafc" : "#0f172a");
+    }
+
+    // Ajuda os controles nativos do iOS/Android a acompanhar o tema.
+    document.documentElement.style.colorScheme = claro ? "light" : "dark";
+
+    if($("temaBtn")){
+        $("temaBtn").textContent =
+            claro ? "🌙" : "☀️";
+
+        $("temaBtn").title =
+            claro
+            ? "Ativar modo noturno"
+            : "Ativar modo diurno";
+        $("temaBtn").setAttribute(
+            "aria-label",
+            claro ? "Ativar modo noturno" : "Ativar modo diurno"
+        );
+    }
+}
+
+if($("temaBtn")){
+    $("temaBtn").addEventListener("click", () => {
+        let atual = "dark";
+        try{ atual = localStorage.getItem("nutri_tema") || "dark"; }catch(e){}
+        try{ localStorage.setItem("nutri_tema", atual === "dark" ? "light" : "dark"); }catch(e){ toast("O navegador bloqueou o salvamento do tema."); }
+        aplicarTema();
+    });
+}
+
+aplicarTema();
+
+
+/* =========================================================
+   PESO
+========================================================= */
+
+let pesos = lerJSONStorage("nutri_pesos", {});
+if(!pesos || typeof pesos !== "object" || Array.isArray(pesos)) pesos = {};
+
+function salvarPesos(){ return salvarJSONStorage("nutri_pesos", pesos); }
+
+function pesoDaData(){
+    const valor = pesos[dataAtual];
+
+    $("peso").value =
+        valor !== undefined ? valor : "";
+
+    $("pesoStatus").textContent =
+        valor !== undefined
+        ? "Peso registrado nesta data: " + numero(valor) + " kg."
+        : "Nenhum peso registrado nesta data.";
+}
+
+function salvarPeso(){
+    let valor =
+        String($("peso").value)
+        .replace(",", ".");
+
+    valor = Number(valor);
+
+    if(!valor || valor <= 0){
+        toast("Informe um peso válido.");
+        return;
+    }
+
+    pesos[dataAtual] = valor;
+    salvarPesos();
+    atualizarResumoPeriodos();
+
+    $("pesoStatus").textContent =
+        "Peso registrado nesta data: " +
+        numero(valor) +
+        " kg.";
+
+    toast("Peso salvo com sucesso! ⚖️");
+}
+
+if($("salvarPesoBtn")){
+    $("salvarPesoBtn").onclick =
+        salvarPeso;
+}
+
+
+/* =========================================================
+   DATAS / RESUMOS SEMANAL E MENSAL
+========================================================= */
+
+function dataObj(data){
+    const p = data.split("-").map(Number);
+    return new Date(p[0], p[1]-1, p[2], 12);
+}
+
+function dataISO(obj){
+    return (
+        obj.getFullYear() +
+        "-" +
+        String(obj.getMonth()+1).padStart(2,"0") +
+        "-" +
+        String(obj.getDate()).padStart(2,"0")
+    );
+}
+
+function diasDaSemana(data){
+    const base = dataObj(data);
+    const dia = base.getDay();
+    const deslocamento =
+        dia === 0 ? -6 : 1 - dia;
+
+    base.setDate(
+        base.getDate() + deslocamento
+    );
+
+    const dias = [];
+
+    for(let i=0;i<7;i++){
+        const d = new Date(base);
+        d.setDate(base.getDate()+i);
+        dias.push(dataISO(d));
+    }
+
+    return dias;
+}
+
+function totaisDosDias(datas){
+    const registros = [];
+    let kcal = 0;
+    let p = 0;
+
+    datas.forEach(data => {
+        const itens =
+            Array.isArray(historico[data])
+            ? historico[data]
+            : [];
+
+        if(!itens.length)
+            return;
+
+        let diaKcal = 0;
+        let diaP = 0;
+
+        itens.forEach(item => {
+            diaKcal += Number(item.kcal || 0);
+            diaP += Number(item.p || 0);
+        });
+
+        kcal += diaKcal;
+        p += diaP;
+
+        registros.push({
+            data,
+            kcal:diaKcal,
+            p:diaP
+        });
+    });
+
+    return {
+        kcal,
+        p,
+        registros,
+        dias:registros.length
+    };
+}
+
+function atualizarResumoPeriodos(){
+
+    const semana =
+        diasDaSemana(dataAtual);
+
+    const sem =
+        totaisDosDias(semana);
+
+    $("semanaPeriodo").textContent =
+        formatarData(semana[0]) +
+        " — " +
+        formatarData(semana[6]);
+
+    $("semDias").textContent =
+        sem.dias;
+
+    $("semKcal").textContent =
+        sem.dias
+        ? numero(sem.kcal / sem.dias)
+        : "0";
+
+    $("semP").textContent =
+        (sem.dias
+        ? numero(sem.p / sem.dias)
+        : "0") + " g";
+
+    $("semTotalKcal").textContent =
+        numero(sem.kcal);
+
+
+    const prefixo =
+        dataAtual.slice(0,7);
+
+    const mesDatas =
+        Object.keys(historico)
+        .filter(data =>
+            data.startsWith(prefixo) &&
+            Array.isArray(historico[data]) &&
+            historico[data].length
+        );
+
+    const mes =
+        totaisDosDias(mesDatas);
+
+    $("mesPeriodo").textContent =
+        dataAtual.slice(5,7) +
+        "/" +
+        dataAtual.slice(0,4);
+
+    $("mesDias").textContent =
+        mes.dias;
+
+    $("mesKcal").textContent =
+        mes.dias
+        ? numero(mes.kcal / mes.dias)
+        : "0";
+
+    $("mesP").textContent =
+        (mes.dias
+        ? numero(mes.p / mes.dias)
+        : "0") + " g";
+
+    $("mesTotalKcal").textContent =
+        numero(mes.kcal);
+
+
+    /* =========================
+       COMPARAÇÃO DE PESO
+    ========================= */
+
+    const pesosMes =
+        Object.keys(pesos)
+        .filter(data =>
+            data.startsWith(prefixo) &&
+            Number(pesos[data]) > 0
+        )
+        .sort();
+
+    if(!pesosMes.length){
+
+        $("pesoInicial").textContent = "—";
+        $("pesoFinal").textContent = "—";
+
+        $("pesoInicialData").textContent =
+            "sem registro";
+
+        $("pesoFinalData").textContent =
+            "sem registro";
+
+        $("pesoVariacao").textContent = "—";
+
+        $("pesoMensagem").textContent =
+            "Registre seu peso para acompanhar o mês.";
+
+    }else{
+
+        const primeira =
+            pesosMes[0];
+
+        const ultima =
+            pesosMes[pesosMes.length-1];
+
+        const pesoInicial =
+            Number(pesos[primeira]);
+
+        const pesoFinal =
+            Number(pesos[ultima]);
+
+        const variacao =
+            pesoFinal - pesoInicial;
+
+        $("pesoInicial").textContent =
+            numero(pesoInicial) + " kg";
+
+        $("pesoFinal").textContent =
+            numero(pesoFinal) + " kg";
+
+        $("pesoInicialData").textContent =
+            formatarData(primeira);
+
+        $("pesoFinalData").textContent =
+            formatarData(ultima);
+
+        if(pesosMes.length === 1){
+
+            $("pesoVariacao").textContent =
+                "—";
+
+            $("pesoMensagem").textContent =
+                "Apenas um registro neste mês. Adicione outro para comparar.";
+
+        }else if(Math.abs(variacao) < 0.05){
+
+            $("pesoVariacao").textContent =
+                "0 kg";
+
+            $("pesoMensagem").textContent =
+                "Sem alteração entre o primeiro e o último registro.";
+
+        }else{
+
+            const sinal =
+                variacao > 0 ? "+" : "";
+
+            $("pesoVariacao").textContent =
+                sinal +
+                numero(variacao) +
+                " kg";
+
+            $("pesoMensagem").textContent =
+                variacao > 0
+                ? "Houve aumento entre os registros do mês."
+                : "Houve redução entre os registros do mês.";
+        }
+    }
+
+    pesoDaData();
+}
+
+
+/* =========================================================
+   ATUALIZAÇÃO GERAL
+========================================================= */
+
+function atualizarTudo(){
+
+    renderAlimentos();
+
+    renderDiario();
+
+    atualizarResumo();
+
+    renderHistorico();
+
+    atualizarMensagem();
+
+    atualizarResumoPeriodos();
+
+}
+
+
+/* =========================================================
+   DATA
+========================================================= */
+
+$("data").value =
+    dataAtual;
+
+$("data").addEventListener(
+    "change",
+    () => {
+
+        dataAtual =
+            $("data").value;
+
+        atualizarTudo();
+
+    }
+);
+
+
+/* =========================================================
+   HOJE
+========================================================= */
+
+$("hojeBtn").onclick = () => {
+
+    dataAtual =
+        hoje();
+
+    $("data").value =
+        dataAtual;
+
+    atualizarTudo();
+
+    toast(
+        "Você está olhando para hoje. ☀️"
+    );
+
+};
+
+
+/* =========================================================
+   NOME
+========================================================= */
+
+$("nome").value =
+    localStorage.getItem(
+        "nutri_nome"
+    ) || "";
+
+$("nome").addEventListener(
+    "input",
+    () => {
+
+        localStorage.setItem(
+            "nutri_nome",
+            $("nome").value
+        );
+
+        atualizarMensagem();
+
+    }
+);
+
+
+/* =========================================================
+   META
+========================================================= */
+
+$("meta").value =
+    meta;
+
+$("meta").addEventListener(
+    "change",
+    () => {
+
+        const valor =
+            Number(
+                $("meta").value
+            );
+
+        if(valor > 0){
+
+            meta =
+                valor;
+
+            localStorage.setItem(
+                "nutri_meta",
+                meta
+            );
+
+            atualizarTudo();
+
+            toast(
+                "Meta atualizada. 🎯"
+            );
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   BUSCA
+========================================================= */
+
+$("busca").addEventListener(
+    "input",
+    renderAlimentos
+);
+
+
+/* =========================================================
+   ENTER NA BUSCA
+========================================================= */
+
+$("busca").addEventListener(
+    "keydown",
+    e => {
+
+        if(e.key === "Enter"){
+
+            const primeiro =
+                $("foodList")
+                .querySelector(
+                    ".food"
+                );
+
+            if(primeiro){
+
+                primeiro
+                    .querySelector(
+                        ".add-food"
+                    )
+                    .click();
+
+            }
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   SALVAR
+========================================================= */
+
+$("salvarBtn").onclick = () => {
+
+    salvarStorage();
+
+    toast(
+        "Dia salvo com sucesso! 💾"
+    );
+
+};
+
+
+/* =========================================================
+   LIMPAR
+========================================================= */
+
+$("limparBtn").onclick = () => {
+
+    if(!diario().length){
+
+        toast(
+            "Não há alimentos para apagar."
+        );
+
+        return;
+
+    }
+
+    const confirmar =
+        confirm(
+            "Deseja realmente limpar todos os alimentos deste dia?"
+        );
+
+    if(!confirmar)
+        return;
+
+    historico[dataAtual] =
+        [];
+
+    salvarStorage();
+
+    atualizarTudo();
+
+    toast(
+        "Dia limpo. Amanhã é uma nova oportunidade. 💚"
+    );
+
+};
+
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+let toastTimer;
+
+function toast(texto){
+
+    const el =
+        $("toast");
+
+    el.textContent =
+        texto;
+
+    el.classList.add(
+        "show"
+    );
+
+    clearTimeout(
+        toastTimer
+    );
+
+    toastTimer =
+        setTimeout(
+            () => {
+
+                el.classList.remove(
+                    "show"
+                );
+
+            },
+            2200
+        );
+
+}
+
+
+/* =========================================================
+   HOME / TOPO
+========================================================= */
+
+if($("homeBtn")){
+    $("homeBtn").onclick = () => {
+        window.scrollTo({
+            top:0,
+            behavior:"smooth"
+        });
+    };
+}
+
+
+/* =========================================================
+   EXPORTAR / IMPORTAR BACKUP JSON
+========================================================= */
+
+function exportarDados(){
+
+    const dados = {};
+
+    for(let i=0;i<localStorage.length;i++){
+
+        const chave =
+            localStorage.key(i);
+
+        if(chave && chave.startsWith("nutri_")){
+            dados[chave] =
+                localStorage.getItem(chave);
+        }
+    }
+
+    const backup = {
+        app:"NutriTrack",
+        formato:"JSON",
+        versao:2,
+        exportadoEm:new Date().toISOString(),
+        dados:dados
+    };
+
+    const blob = new Blob(
+        [JSON.stringify(backup,null,2)],
+        {type:"application/json;charset=utf-8"}
+    );
+
+    const url =
+        URL.createObjectURL(blob);
+
+    const link =
+        document.createElement("a");
+
+    const agora =
+        new Date();
+
+    const nomeArquivo =
+        "NutriTrack_Backup_" +
+        agora.getFullYear() + "-" +
+        String(agora.getMonth()+1).padStart(2,"0") + "-" +
+        String(agora.getDate()).padStart(2,"0") +
+        ".json";
+
+    link.href = url;
+    link.download = nomeArquivo;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    setTimeout(
+        () => URL.revokeObjectURL(url),
+        1000
+    );
+
+    toast("Backup JSON exportado com sucesso! 📦");
+}
+
+function importarDados(arquivo){
+
+    if(!arquivo)
+        return;
+
+    const leitor =
+        new FileReader();
+
+    leitor.onload = event => {
+
+        try{
+
+            const backup =
+                JSON.parse(event.target.result);
+
+            if(
+                !backup ||
+                backup.app !== "NutriTrack" ||
+                !backup.dados ||
+                typeof backup.dados !== "object"
+            ){
+                throw new Error("Arquivo inválido.");
+            }
+
+            const confirmar = confirm(
+                "ATENÇÃO!\n\n" +
+                "A importação substituirá os dados atuais do NutriTrack pelos dados do backup.\n\n" +
+                "Deseja continuar?"
+            );
+
+            if(!confirmar)
+                return;
+
+            const confirmarFinal = confirm(
+                "Última confirmação.\n\n" +
+                "Os dados atuais serão substituídos.\n" +
+                "Recomenda-se exportar um backup antes de continuar.\n\n" +
+                "Continuar a importação?"
+            );
+
+            if(!confirmarFinal)
+                return;
+
+            const chavesAtuais = [];
+
+            for(let i=0;i<localStorage.length;i++){
+                const chave = localStorage.key(i);
+                if(chave && chave.startsWith("nutri_")){
+                    chavesAtuais.push(chave);
+                }
+            }
+
+            chavesAtuais.forEach(
+                chave => localStorage.removeItem(chave)
+            );
+
+            Object.keys(backup.dados).forEach(chave => {
+
+                if(!chave.startsWith("nutri_"))
+                    return;
+
+                const valor = backup.dados[chave];
+
+                if(typeof valor === "string"){
+                    localStorage.setItem(chave,valor);
+                }else{
+                    localStorage.setItem(
+                        chave,
+                        JSON.stringify(valor)
+                    );
+                }
+            });
+
+            toast("Dados importados! O NutriTrack será atualizado.");
+
+            setTimeout(
+                () => location.reload(),
+                700
+            );
+
+        }catch(erro){
+
+            toast("Não foi possível importar este JSON.");
+            console.error(erro);
+        }
+    };
+
+    leitor.onerror = () => {
+        toast("Erro ao ler o arquivo de backup.");
+    };
+
+    leitor.readAsText(arquivo,"UTF-8");
+}
+
+if($("exportarBtn")){
+    $("exportarBtn").onclick =
+        exportarDados;
+}
+
+if($("importarBtn") && $("arquivoImportacao")){
+
+    $("importarBtn").onclick = () => {
+        $("arquivoImportacao").click();
+    };
+
+    $("arquivoImportacao").addEventListener(
+        "change",
+        event => {
+            const arquivo =
+                event.target.files[0];
+
+            importarDados(arquivo);
+
+            event.target.value = "";
+        }
+    );
+}
+
+
+
+/* =========================================================
+   RESUMO PARA COMPARTILHAR / IA
+========================================================= */
+
+let modoResumoCompartilhamento = "dia";
+let ultimoResumoCompartilhamento = "";
+
+function totaisDeItens(itens){
+    return (itens || []).reduce(
+        (s,item) => {
+            s.kcal += Number(item.kcal || 0);
+            s.p += Number(item.p || 0);
+            s.c += Number(item.c || 0);
+            s.g += Number(item.g || 0);
+            return s;
+        },
+        {kcal:0,p:0,c:0,g:0}
+    );
+}
+
+function dataEntre(inicio,fim){
+    const datas = [];
+    let atual = dataObj(inicio);
+    const final = dataObj(fim);
+
+    while(atual <= final){
+        datas.push(dataISO(atual));
+        atual.setDate(atual.getDate()+1);
+    }
+
+    return datas;
+}
+
+function formatarDataCurta(data){
+    if(!data) return "";
+    const p = data.split("-");
+    return p[2] + "/" + p[1];
+}
+
+function montarResumoDia(data){
+    const itens =
+        Array.isArray(historico[data])
+        ? historico[data]
+        : [];
+
+    const totais = totaisDeItens(itens);
+    const nome = ($("nome")?.value || "").trim();
+    const peso = pesos[data];
+
+    let texto =
+        "FITPRO 2.0 — RESUMO DIÁRIO\n" +
+        "📅 " + formatarData(data) + "\n";
+
+    if(nome)
+        texto += "👤 " + nome + "\n";
+
+    if(peso !== undefined)
+        texto += "⚖️ Peso: " + numero(peso) + " kg\n";
+
+    texto +=
+        "\n🔥 CALORIAS\n" +
+        "Consumidas: " + numero(totais.kcal) + " kcal\n" +
+        "Meta: " + numero(meta) + " kcal\n" +
+        (totais.kcal <= meta
+            ? "Restante: " + numero(meta - totais.kcal) + " kcal\n"
+            : "Acima da meta: " + numero(totais.kcal - meta) + " kcal\n") +
+        "\n🥩 PROTEÍNAS\n" +
+        numero(totais.p) + " g\n" +
+        "\n🍚 CARBOIDRATOS\n" +
+        numero(totais.c) + " g\n" +
+        "\n🥑 GORDURAS\n" +
+        numero(totais.g) + " g\n" +
+        "\n🍽️ ALIMENTOS\n";
+
+    if(!itens.length){
+        texto += "Nenhum alimento registrado.\n";
+    }else{
+        itens.forEach(item => {
+            texto +=
+                "• " + item.alimento +
+                " — " + numero(item.gramas) + "g — " +
+                numero(item.kcal) + " kcal — " +
+                numero(item.p) + "g proteína\n";
+        });
+    }
+
+    texto += "\nGerado pelo FITPRO 2.0.";
+    return texto;
+}
+
+function montarResumoPeriodo(inicio,fim){
+    const datas = dataEntre(inicio,fim);
+    const diasRegistrados = [];
+    let total = {kcal:0,p:0,c:0,g:0};
+    let metaAcumulada = 0;
+
+    datas.forEach(data => {
+        const itens =
+            Array.isArray(historico[data])
+            ? historico[data]
+            : [];
+
+        if(!itens.length)
+            return;
+
+        const t = totaisDeItens(itens);
+
+        total.kcal += t.kcal;
+        total.p += t.p;
+        total.c += t.c;
+        total.g += t.g;
+        metaAcumulada += meta;
+
+        diasRegistrados.push({
+            data,
+            itens,
+            totais:t
+        });
+    });
+
+    const dias = diasRegistrados.length;
+    let texto =
+        "FITPRO 2.0 — RESUMO DO PERÍODO\n" +
+        "📅 " + formatarData(inicio) +
+        " → " + formatarData(fim) + "\n";
+
+    const nome = ($("nome")?.value || "").trim();
+
+    if(nome)
+        texto += "👤 " + nome + "\n";
+
+    texto +=
+        "\n📊 RESUMO GERAL\n" +
+        "Dias registrados: " + dias + " de " + datas.length + "\n" +
+        "Calorias totais: " + numero(total.kcal) + " kcal\n" +
+        "Média diária: " + (dias ? numero(total.kcal / dias) : "0") + " kcal\n" +
+        "Proteínas totais: " + numero(total.p) + " g\n" +
+        "Proteína média: " + (dias ? numero(total.p / dias) : "0") + " g/dia\n" +
+        "Carboidratos totais: " + numero(total.c) + " g\n" +
+        "Gorduras totais: " + numero(total.g) + " g\n" +
+        "Meta acumulada dos dias registrados: " + numero(metaAcumulada) + " kcal\n";
+
+    const dentroMeta =
+        diasRegistrados.filter(d => d.totais.kcal <= meta).length;
+
+    texto +=
+        "Dias dentro da meta: " + dentroMeta + "/" + dias + "\n" +
+        "Dias acima da meta: " + (dias - dentroMeta) + "/" + dias + "\n";
+
+    const pesosPeriodo =
+        Object.keys(pesos)
+        .filter(data =>
+            data >= inicio &&
+            data <= fim &&
+            Number(pesos[data]) > 0
+        )
+        .sort();
+
+    if(pesosPeriodo.length){
+        const primeiro = Number(pesos[pesosPeriodo[0]]);
+        const ultimo = Number(pesos[pesosPeriodo[pesosPeriodo.length-1]]);
+        const variacao = ultimo - primeiro;
+
+        texto +=
+            "\n⚖️ PESO\n" +
+            "Inicial: " + numero(primeiro) + " kg (" + formatarData(pesosPeriodo[0]) + ")\n" +
+            "Final: " + numero(ultimo) + " kg (" + formatarData(pesosPeriodo[pesosPeriodo.length-1]) + ")\n" +
+            "Variação: " + (variacao > 0 ? "+" : "") + numero(variacao) + " kg\n";
+    }
+
+    texto += "\n📅 RESUMO DIÁRIO\n";
+
+    if(!diasRegistrados.length){
+        texto += "Nenhum dia com alimentação registrada neste período.\n";
+    }else{
+        diasRegistrados.forEach(dia => {
+            texto +=
+                "\n" + formatarData(dia.data) +
+                " — " + numero(dia.totais.kcal) + " kcal — " +
+                numero(dia.totais.p) + " g proteína\n";
+
+            dia.itens.forEach(item => {
+                texto +=
+                    "• " + item.alimento +
+                    " — " + numero(item.gramas) + "g — " +
+                    numero(item.kcal) + " kcal — " +
+                    numero(item.p) + "g proteína\n";
+            });
+        });
+    }
+
+    texto += "\nGerado pelo FITPRO 2.0.";
+    return texto;
+}
+
+function gerarResumoCompartilhamento(){
+    let texto = "";
+
+    if(modoResumoCompartilhamento === "dia"){
+        texto = montarResumoDia(dataAtual);
+    }else{
+        const inicio = $("resumoDataInicio").value;
+        const fim = $("resumoDataFim").value;
+
+        if(!inicio || !fim){
+            toast("Escolha a data inicial e a data final.");
+            return "";
+        }
+
+        if(inicio > fim){
+            toast("A data inicial não pode ser maior que a final.");
+            return "";
+        }
+
+        texto = montarResumoPeriodo(inicio,fim);
+    }
+
+    ultimoResumoCompartilhamento = texto;
+
+    $("resumoOutput").value = texto;
+    $("resumoPreview").classList.add("show");
+
+    return texto;
+}
+
+async function copiarResumoCompartilhamento(){
+    const texto =
+        ultimoResumoCompartilhamento ||
+        gerarResumoCompartilhamento();
+
+    if(!texto)
+        return;
+
+    try{
+        if(!navigator.clipboard || !window.isSecureContext) throw new Error("Clipboard indisponível");
+        await navigator.clipboard.writeText(texto);
+        toast("Resumo copiado! 📋");
+    }catch(erro){
+        const campo = $("resumoOutput");
+        campo.focus();
+        campo.select();
+
+        try{
+            document.execCommand("copy");
+            toast("Resumo copiado! 📋");
+        }catch(e){
+            toast("Selecione o texto e copie manualmente.");
+        }
+    }
+}
+
+async function compartilharResumoCompartilhamento(){
+    const texto =
+        ultimoResumoCompartilhamento ||
+        gerarResumoCompartilhamento();
+
+    if(!texto)
+        return;
+
+    if(navigator.share){
+        try{
+            await navigator.share({
+                title:"Resumo FITPRO 2.0",
+                text:texto
+            });
+            return;
+        }catch(erro){
+            if(erro && erro.name === "AbortError")
+                return;
+        }
+    }
+
+    await copiarResumoCompartilhamento();
+    toast("Seu aparelho não oferece compartilhamento direto. O resumo foi copiado.");
+}
+
+function atualizarModoResumoUI(){
+    const dia = $("resumoDiaBtn");
+    const periodo = $("resumoPeriodoBtn");
+    const campos = $("periodoResumoCampos");
+
+    if(dia) dia.classList.toggle("active",modoResumoCompartilhamento === "dia");
+    if(periodo) periodo.classList.toggle("active",modoResumoCompartilhamento === "periodo");
+
+    if(campos)
+        campos.style.display =
+            modoResumoCompartilhamento === "periodo"
+            ? "block"
+            : "none";
+
+    if(modoResumoCompartilhamento === "periodo"){
+        if(!$("resumoDataInicio").value)
+            $("resumoDataInicio").value = dataAtual;
+
+        if(!$("resumoDataFim").value)
+            $("resumoDataFim").value = dataAtual;
+    }
+
+    ultimoResumoCompartilhamento = "";
+    if($("resumoPreview"))
+        $("resumoPreview").classList.remove("show");
+}
+
+if($("resumoDiaBtn")){
+    $("resumoDiaBtn").onclick = () => {
+        modoResumoCompartilhamento = "dia";
+        atualizarModoResumoUI();
+    };
+}
+
+if($("resumoPeriodoBtn")){
+    $("resumoPeriodoBtn").onclick = () => {
+        modoResumoCompartilhamento = "periodo";
+        atualizarModoResumoUI();
+    };
+}
+
+if($("gerarResumoBtn")){
+    $("gerarResumoBtn").onclick =
+        gerarResumoCompartilhamento;
+}
+
+if($("copiarResumoBtn")){
+    $("copiarResumoBtn").onclick =
+        copiarResumoCompartilhamento;
+}
+
+if($("compartilharResumoBtn")){
+    $("compartilharResumoBtn").onclick =
+        compartilharResumoCompartilhamento;
+}
+
+atualizarModoResumoUI();
+
+
+/* =========================================================
+   ADICIONAR ALIMENTO PERSONALIZADO
+========================================================= */
+
+function abrirModalAlimento(){
+    const modal = $("alimentoModal");
+    if(!modal) return;
+
+    modal.classList.add("show");
+    modal.setAttribute("aria-hidden","false");
+    setTimeout(() => $("novoAlimentoNome").focus(), 80);
+}
+
+function fecharModalAlimento(){
+    const modal = $("alimentoModal");
+    if(!modal) return;
+
+    modal.classList.remove("show");
+    modal.setAttribute("aria-hidden","true");
+}
+
+function limparFormularioNovoAlimento(){
+    [
+        "novoAlimentoNome",
+        "novoAlimentoKcal",
+        "novoAlimentoProteina",
+        "novoAlimentoCarbo",
+        "novoAlimentoGordura"
+    ].forEach(id => {
+        if($(id)) $(id).value = "";
+    });
+}
+
+function numeroFormulario(id){
+    const valor = String($(id).value || "").replace(",",".").trim();
+    return valor === "" ? 0 : Number(valor);
+}
+
+function salvarNovoAlimento(){
+
+    const nome = $("novoAlimentoNome").value.trim();
+    const kcal = numeroFormulario("novoAlimentoKcal");
+    const p = numeroFormulario("novoAlimentoProteina");
+    const c = numeroFormulario("novoAlimentoCarbo");
+    const g = numeroFormulario("novoAlimentoGordura");
+
+    if(!nome){
+        toast("Informe o nome do alimento.");
+        $("novoAlimentoNome").focus();
+        return;
+    }
+
+    if(!Number.isFinite(kcal) || kcal < 0){
+        toast("Informe uma caloria válida.");
+        return;
+    }
+
+    if(!Number.isFinite(p) || p < 0){
+        toast("Informe uma proteína válida.");
+        return;
+    }
+
+    if(!Number.isFinite(c) || c < 0 || !Number.isFinite(g) || g < 0){
+        toast("Revise carboidratos e gorduras.");
+        return;
+    }
+
+    const existe = listaCompletaAlimentos().some(
+        alimento => normalizar(alimento.name) === normalizar(nome)
+    );
+
+    if(existe){
+        toast("Esse alimento já existe na base.");
+        return;
+    }
+
+    const novo = {
+        id:"custom_" + Date.now() + "_" + Math.random().toString(36).slice(2,8),
+        name:nome,
+        kcal:kcal,
+        p:p,
+        c:c,
+        g:g,
+        personalizado:true
+    };
+
+    alimentosPersonalizados.push(novo);
+    salvarAlimentosPersonalizados();
+    limparFormularioNovoAlimento();
+    fecharModalAlimento();
+    renderAlimentos();
+    toast("Alimento salvo na sua base! 🥗");
+
+}
+
+if($("abrirAdicionarAlimentoBtn")){
+    $("abrirAdicionarAlimentoBtn").onclick = abrirModalAlimento;
+}
+
+if($("fecharAlimentoModalBtn")){
+    $("fecharAlimentoModalBtn").onclick = fecharModalAlimento;
+}
+
+if($("cancelarNovoAlimentoBtn")){
+    $("cancelarNovoAlimentoBtn").onclick = () => {
+        limparFormularioNovoAlimento();
+        fecharModalAlimento();
+    };
+}
+
+if($("salvarNovoAlimentoBtn")){
+    $("salvarNovoAlimentoBtn").onclick = salvarNovoAlimento;
+}
+
+if($("alimentoModal")){
+    $("alimentoModal").addEventListener("click", event => {
+        if(event.target === $("alimentoModal")){
+            fecharModalAlimento();
+        }
+    });
+}
+
+document.addEventListener("keydown", event => {
+    if(event.key === "Escape" && $("alimentoModal")?.classList.contains("show")){
+        fecharModalAlimento();
+    }
+});
+
+
+/* =========================================================
+   INICIALIZAÇÃO
+========================================================= */
+
+aplicarTema();
+atualizarTudo();
+
+
+
+</script>
+
+
+<script>
+if("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")){
+  window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(e=>console.warn("FITPRO SW:",e)));
+}
+</script>
+</body>
+</html>
