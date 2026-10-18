@@ -2307,7 +2307,7 @@ let alimentosPersonalizados =
     lerJSONStorage("nutri_alimentos_personalizados",[]);
 
 function salvarAlimentosPersonalizados(){
-    salvarJSONStorage("nutri_alimentos_personalizados",alimentosPersonalizados);
+    return salvarJSONStorage("nutri_alimentos_personalizados",alimentosPersonalizados);
 }
 
 function listaCompletaAlimentos(){
@@ -4727,7 +4727,16 @@ function salvarNovoAlimento(){
     };
 
     alimentosPersonalizados.push(novo);
-    salvarAlimentosPersonalizados();
+
+    // Só fecha o modal quando o navegador confirmar que salvou os dados.
+    if(!salvarAlimentosPersonalizados()){
+        alimentosPersonalizados = alimentosPersonalizados.filter(
+            alimento => alimento.id !== novo.id
+        );
+        toast("Não foi possível salvar no navegador. Libere espaço ou exporte um backup e tente novamente.");
+        return;
+    }
+
     limparFormularioNovoAlimento();
     fecharModalAlimento();
     renderAlimentos();
@@ -6132,5 +6141,38 @@ body:not(.light) .goal-status.status-over{background:#451a1a;color:#fecaca}
 })();
 </script>
 
-</body>
-</html>
+
+<!-- CORREÇÃO PROFIT 3.6 — GARANTIA DO CLIQUE EM SALVAR ALIMENTO -->
+<script id="profit-custom-food-save-fix-v36">
+(function(){
+  "use strict";
+  const button = document.getElementById("salvarNovoAlimentoBtn");
+  if(!button) return;
+
+  // Reatribui o clique após os demais módulos, inclusive se algum script
+  // anterior tiver interrompido a instalação do evento original.
+  button.onclick = function(event){
+    if(event) event.preventDefault();
+    if(button.dataset.saving === "1") return;
+    button.dataset.saving = "1";
+    button.disabled = true;
+
+    try {
+      if(typeof window.salvarNovoAlimento !== "function") {
+        throw new Error("A rotina de salvar alimento não foi carregada.");
+      }
+      window.salvarNovoAlimento();
+    } catch(error) {
+      console.error("PROFIT: erro ao salvar alimento personalizado", error);
+      const toast = document.getElementById("toast");
+      if(toast){
+        toast.textContent = "Erro ao salvar alimento. Confira os dados e tente novamente.";
+        toast.classList.add("show");
+        setTimeout(() => toast.classList.remove("show"), 3500);
+      } else {
+        alert("Erro ao salvar alimento. Confira os dados e tente novamente.");
+      }
+    } finally {
+      button.disabled = false;
+      delete button.dataset.saving;
+    }
