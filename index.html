@@ -1248,6 +1248,22 @@ main.content > section[data-screen].screen-active{display:block;animation:profit
 #swipeShortcut.profit-shortcut-disabled{display:none!important}
 @media(max-width:420px){.profit-form-grid,.profit-measure-grid{grid-template-columns:1fr 1fr}.profit-target-grid{grid-template-columns:1fr 1fr}}
 </style>
+<!-- ===== PATCH 1 — CSS DO FILTRO NUTRICIONAL ===== -->
+<style id="profit-nf-css">
+.nf-box{margin-bottom:10px}
+.nf-chips{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;margin-bottom:8px}
+.nf-chip{border:1px solid var(--border);border-radius:10px;padding:8px 2px;background:var(--soft);color:var(--text);font-size:11px;font-weight:700;line-height:1.2;min-height:38px}
+.nf-chip.active{border-color:var(--green);background:var(--level-active-bg);color:var(--level-active-text);box-shadow:0 0 0 1px var(--green) inset}
+.nf-levels{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px}
+.nf-level{border:1px solid transparent;border-radius:11px;padding:7px 1px;background:var(--soft);color:var(--level-text);text-align:center;min-height:48px;font-weight:700}
+.nf-level strong{display:block;font-size:13px;margin-bottom:2px}
+.nf-level small{display:block;font-size:8px;font-weight:normal;color:var(--muted)}
+.nf-level.active{border-color:var(--green);background:var(--level-active-bg);color:var(--level-active-text);box-shadow:0 0 0 1px var(--green) inset}
+.nf-level.active small{color:var(--level-active-text)}
+.nf-foot{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:6px;font-size:10px;color:var(--muted);line-height:1.3}
+.nf-clear{flex:0 0 auto;background:var(--soft);color:var(--text);border:1px solid var(--border);border-radius:9px;padding:6px 9px;font-size:10px;font-weight:700}
+@media(max-width:360px){.nf-chip{font-size:10px}.nf-level small{font-size:7px}}
+</style>
 </head>
 <body>
 <div class="app">
@@ -1631,6 +1647,22 @@ main.content > section[data-screen].screen-active{display:block;animation:profit
 <button class="btn-add-base" id="abrirAdicionarAlimentoBtn" type="button">＋ Adicionar alimento</button>
 </div>
 <input class="input search" id="busca" placeholder="🔎 Procurar alimento..." type="text"/>
+<!-- ===== PATCH 2 — SELETOR DE NUTRIENTE / NÍVEIS ===== -->
+<div class="nf-box" id="nfBox">
+  <div class="nf-chips" role="group" aria-label="Nutriente do filtro">
+    <button type="button" class="nf-chip active" data-nf="kcal">🔥 Calorias</button>
+    <button type="button" class="nf-chip" data-nf="p">🥩 Proteína</button>
+    <button type="button" class="nf-chip" data-nf="c">🍚 Carbo</button>
+    <button type="button" class="nf-chip" data-nf="g">🥑 Gordura</button>
+  </div>
+  <div id="nfMacro" style="display:none">
+    <div class="nf-levels" id="nfLevels"></div>
+    <div class="nf-foot">
+      <span id="nfInfo"></span>
+      <button type="button" class="nf-clear" id="nfClear">✕ Limpar filtro</button>
+    </div>
+  </div>
+</div>
 <div class="levels">
 <button class="level active" data-level="Todos" type="button">
 <strong>✨</strong>
@@ -1863,9 +1895,7 @@ main.content > section[data-screen].screen-active{display:block;animation:profit
 
 const alimentos = [
 
-/* =========================
-   VEGETAIS
-========================= */
+/* VEGETAIS */
 
 {name:"Pepino",kcal:15,p:.7,c:3.6,g:.1},
 {name:"Alface",kcal:14,p:1.4,c:2.9,g:.2},
@@ -1894,9 +1924,7 @@ const alimentos = [
 {name:"Nabo",kcal:28,p:.9,c:6.4,g:.1},
 {name:"Pepino japonês",kcal:15,p:.7,c:3.6,g:.1},
 
-/* =========================
-   FRUTAS
-========================= */
+/* FRUTAS */
 
 {name:"Morango",kcal:32,p:.7,c:7.7,g:.3},
 {name:"Melancia",kcal:30,p:.6,c:7.6,g:.2},
@@ -1926,9 +1954,7 @@ const alimentos = [
 {name:"Caqui",kcal:70,p:.6,c:18.6,g:.2},
 {name:"Figo",kcal:74,p:.8,c:19.2,g:.3},
 
-/* =========================
-   BOVINAS
-========================= */
+/* BOVINAS */
 
 {name:"Patinho",kcal:219,p:35,c:0,g:8},
 {name:"Coxão mole",kcal:219,p:32,c:0,g:9},
@@ -1954,9 +1980,7 @@ const alimentos = [
 {name:"Kafta bovina",kcal:250,p:20,c:5,g:17},
 {name:"Hambúrguer bovino caseiro",kcal:250,p:25,c:4,g:15},
 
-/* =========================
-   SUÍNAS
-========================= */
+/* SUÍNAS */
 
 {name:"Lombo suíno",kcal:190,p:27,c:0,g:8},
 {name:"Pernil suíno",kcal:210,p:27,c:0,g:10},
@@ -1968,9 +1992,7 @@ const alimentos = [
 {name:"Linguiça suína",kcal:300,p:16,c:2,g:25},
 {name:"Bacon",kcal:541,p:37,c:1,g:42},
 
-/* =========================
-   FRANGO
-========================= */
+/* FRANGO */
 
 {name:"Peito de frango sem pele",kcal:165,p:31,c:0,g:3.6},
 {name:"Peito de frango cozido",kcal:165,p:31,c:0,g:3.6},
@@ -1988,9 +2010,7 @@ const alimentos = [
 {name:"Espetinho de frango",kcal:180,p:28,c:2,g:6},
 {name:"Hambúrguer de frango",kcal:190,p:18,c:8,g:9},
 
-/* =========================
-   AVES
-========================= */
+/* AVES */
 
 {name:"Peito de peru",kcal:135,p:29,c:1,g:2},
 {name:"Pernil de peru",kcal:150,p:29,c:0,g:3},
@@ -1998,9 +2018,7 @@ const alimentos = [
 {name:"Chester",kcal:170,p:28,c:0,g:6},
 {name:"Peru assado",kcal:150,p:29,c:0,g:3},
 
-/* =========================
-   PEIXES
-========================= */
+/* PEIXES */
 
 {name:"Tilápia",kcal:128,p:26,c:0,g:2.7},
 {name:"Merluza",kcal:90,p:18,c:0,g:2},
@@ -2014,9 +2032,7 @@ const alimentos = [
 {name:"Peixe grelhado",kcal:140,p:25,c:0,g:4},
 {name:"Peixe empanado",kcal:220,p:17,c:15,g:10},
 
-/* =========================
-   FRUTOS DO MAR
-========================= */
+/* FRUTOS DO MAR */
 
 {name:"Camarão",kcal:99,p:24,c:.2,g:.3},
 {name:"Lula",kcal:92,p:15.6,c:3.1,g:1.4},
@@ -2024,9 +2040,7 @@ const alimentos = [
 {name:"Mexilhão",kcal:86,p:12,c:3.7,g:2.2},
 {name:"Caranguejo",kcal:97,p:20,c:0,g:1.5},
 
-/* =========================
-   OVOS
-========================= */
+/* OVOS */
 
 {name:"Ovo inteiro",kcal:143,p:12.6,c:.7,g:9.5},
 {name:"Clara de ovo",kcal:52,p:10.9,c:.7,g:.2},
@@ -2035,9 +2049,7 @@ const alimentos = [
 {name:"Omelete simples",kcal:160,p:11,c:2,g:11},
 {name:"Omelete com frango",kcal:180,p:20,c:2,g:9},
 
-/* =========================
-   LATICÍNIOS
-========================= */
+/* LATICÍNIOS */
 
 {name:"Iogurte natural desnatado",kcal:41,p:3.5,c:5.9,g:.1},
 {name:"Iogurte grego zero",kcal:59,p:10,c:3.6,g:.2},
@@ -2055,9 +2067,7 @@ const alimentos = [
 {name:"Cream cheese",kcal:342,p:6,c:4,g:34},
 {name:"Requeijão",kcal:250,p:7,c:3,g:23},
 
-/* =========================
-   LEGUMINOSAS / PROTEÍNAS
-========================= */
+/* LEGUMINOSAS / PROTEÍNAS */
 
 {name:"Feijão cozido",kcal:76,p:4.8,c:13.6,g:.5},
 {name:"Feijão preto",kcal:77,p:4.5,c:14,g:.5},
@@ -2072,9 +2082,7 @@ const alimentos = [
 {name:"Tofu",kcal:76,p:8,c:1.9,g:4.8},
 {name:"Tempeh",kcal:195,p:20,c:8,g:11},
 
-/* =========================
-   ARROZ / CEREAIS
-========================= */
+/* ARROZ / CEREAIS */
 
 {name:"Arroz branco cozido",kcal:130,p:2.7,c:28.2,g:.3},
 {name:"Arroz integral cozido",kcal:123,p:2.7,c:25.6,g:1},
@@ -2102,9 +2110,7 @@ const alimentos = [
 {name:"Farinha láctea",kcal:400,p:13,c:70,g:7},
 {name:"Neston cereais",kcal:380,p:8,c:78,g:3},
 
-/* =========================
-   PÃES
-========================= */
+/* PÃES */
 
 {name:"Pão francês",kcal:300,p:9,c:58,g:3},
 {name:"Pão de sal",kcal:300,p:9,c:58,g:3},
@@ -2118,9 +2124,7 @@ const alimentos = [
 {name:"Bisnaguinha",kcal:300,p:8,c:55,g:6},
 {name:"Pão de queijo",kcal:350,p:8,c:40,g:17},
 
-/* =========================
-   TUBÉRCULOS
-========================= */
+/* TUBÉRCULOS */
 
 {name:"Batata inglesa cozida",kcal:87,p:1.9,c:20,g:.1},
 {name:"Batata inglesa assada",kcal:93,p:2.5,c:21,g:.1},
@@ -2131,9 +2135,7 @@ const alimentos = [
 {name:"Batata frita",kcal:312,p:3.4,c:41,g:15},
 {name:"Purê de batata",kcal:110,p:2,c:18,g:4},
 
-/* =========================
-   CARNES PREPARADAS
-========================= */
+/* CARNES PREPARADAS */
 
 {name:"Torta de carne",kcal:250,p:12,c:25,g:12},
 {name:"Torta de frango",kcal:240,p:13,c:24,g:11},
@@ -2150,9 +2152,7 @@ const alimentos = [
 {name:"Almôndega de frango",kcal:190,p:18,c:8,g:9},
 {name:"Carne seca",kcal:250,p:40,c:0,g:9},
 
-/* =========================
-   COMIDA DO DIA A DIA
-========================= */
+/* COMIDA DO DIA A DIA */
 
 {name:"Cachorro-quente simples",kcal:280,p:10,c:30,g:13},
 {name:"Cachorro-quente completo",kcal:330,p:12,c:35,g:17},
@@ -2177,9 +2177,7 @@ const alimentos = [
 {name:"Esfiha de carne",kcal:230,p:10,c:28,g:8},
 {name:"Esfiha de frango",kcal:220,p:11,c:28,g:7},
 
-/* =========================
-   CAFÉS / BEBIDAS
-========================= */
+/* CAFÉS / BEBIDAS */
 
 {name:"Café sem açúcar",kcal:2,p:.3,c:0,g:0},
 {name:"Café descafeinado",kcal:2,p:.3,c:0,g:0},
@@ -2192,9 +2190,7 @@ const alimentos = [
 {name:"Chá de camomila",kcal:1,p:0,c:0,g:0},
 {name:"Água",kcal:0,p:0,c:0,g:0},
 
-/* =========================
-   REFRIGERANTES
-========================= */
+/* REFRIGERANTES */
 
 {name:"Coca-Cola",kcal:42,p:0,c:10.6,g:0},
 {name:"Coca-Cola Zero",kcal:0,p:0,c:0,g:0},
@@ -2205,9 +2201,7 @@ const alimentos = [
 {name:"Sprite",kcal:40,p:0,c:10,g:0},
 {name:"Sprite Zero",kcal:0,p:0,c:0,g:0},
 
-/* =========================
-   SUCOS
-========================= */
+/* SUCOS */
 
 {name:"Suco em pó preparado",kcal:20,p:0,c:5,g:0},
 {name:"Suco em pó com açúcar",kcal:40,p:0,c:10,g:0},
@@ -2222,9 +2216,7 @@ const alimentos = [
 {name:"Suco natural de melancia",kcal:30,p:.6,c:7,g:.1},
 {name:"Suco natural de maracujá",kcal:39,p:.7,c:9,g:.2},
 
-/* =========================
-   DOCES / SOBREMESAS
-========================= */
+/* DOCES / SOBREMESAS */
 
 {name:"Gelatina zero",kcal:10,p:1.5,c:.5,g:0},
 {name:"Gelatina comum",kcal:60,p:1.5,c:14,g:0},
@@ -2237,9 +2229,7 @@ const alimentos = [
 {name:"Açaí com xarope",kcal:110,p:1,c:25,g:1},
 {name:"Açaí natural",kcal:70,p:1,c:7,g:4},
 
-/* =========================
-   SEMENTES / CASTANHAS
-========================= */
+/* SEMENTES / CASTANHAS */
 
 {name:"Chia",kcal:486,p:16.5,c:42.1,g:30.7},
 {name:"Linhaça",kcal:534,p:18.3,c:28.9,g:42.2},
@@ -2251,9 +2241,7 @@ const alimentos = [
 {name:"Amêndoas",kcal:579,p:21,c:21.6,g:49.9},
 {name:"Nozes",kcal:654,p:15,c:14,g:65},
 
-/* =========================
-   ÓLEOS / ALIMENTOS CALÓRICOS
-========================= */
+/* ÓLEOS / ALIMENTOS CALÓRICOS */
 
 {name:"Azeite de oliva",kcal:884,p:0,c:0,g:100},
 {name:"Óleo de soja",kcal:884,p:0,c:0,g:100},
@@ -2264,9 +2252,7 @@ const alimentos = [
 {name:"Chocolate amargo",kcal:598,p:7.8,c:45.9,g:42.6},
 {name:"Mel",kcal:304,p:.3,c:82.4,g:0},
 
-/* =========================
-   MAIS ALIMENTOS
-========================= */
+/* MAIS ALIMENTOS */
 
 {name:"Ovo cozido",kcal:155,p:12.6,c:1.1,g:10.6},
 {name:"Ovo pochê",kcal:143,p:12.6,c:1.1,g:9.5},
@@ -2336,6 +2322,36 @@ let dataAtual = hoje();
 let selecionado = null;
 
 let nivelAtual = "Todos";
+
+/* ===== PATCH 3 — FILTRO NUTRICIONAL POR NÍVEL (por 100g; limite superior incluído) ===== */
+const NF_FAIXAS = {
+    p:{nome:"Proteína",     max:[5,10,20,30]},
+    c:{nome:"Carboidratos", max:[5,15,30,60]},
+    g:{nome:"Gorduras",     max:[3,10,20,40]}
+};
+let nutrienteFiltro = "kcal";
+let nivelNutri = null;
+
+function nfNivel(item,nut){
+    const bruto = item[nut];
+    if(bruto === null || bruto === undefined || bruto === "") return null; // sem dado: não entra
+    const v = Number(bruto);
+    if(!Number.isFinite(v) || v < 0) return null;
+    const max = NF_FAIXAS[nut].max;
+    for(let i=0;i<max.length;i++){
+        if(v <= max[i]) return i+1;
+    }
+    return 5;
+}
+
+function nfNivelOk(item,nivelKcal){
+    if(nutrienteFiltro === "kcal"){
+        return nivelAtual === "Todos" || Number(nivelAtual) === nivelKcal; // regra original
+    }
+    if(nivelNutri === null) return true;
+    return nfNivel(item,nutrienteFiltro) === nivelNutri;
+}
+/* ===== FIM PATCH 3 ===== */
 
 let historico =
     lerJSONStorage("nutri_historico",{});
@@ -2826,9 +2842,8 @@ function renderAlimentos(){
             const nivel =
                 getNivel(item.kcal);
 
-            const nivelOk =
-                nivelAtual === "Todos" ||
-                Number(nivelAtual) === nivel;
+            /* PATCH 4 — filtro por nível (calorias original + macros) */
+            const nivelOk = nfNivelOk(item, nivel);
 
             return nomeOk && nivelOk;
 
@@ -3976,9 +3991,7 @@ function atualizarResumoPeriodos(){
         numero(mes.kcal);
 
 
-    /* =========================
-       COMPARAÇÃO DE PESO
-    ========================= */
+    /* COMPARAÇÃO DE PESO */
 
     const pesosMes =
         Object.keys(pesos)
@@ -6413,6 +6426,81 @@ body:not(.light) .goal-status.status-over{background:#451a1a;color:#fecaca}
   document.addEventListener("visibilitychange", () => {
     if(document.visibilityState === "visible") eveningReminder();
   });
+})();
+</script>
+
+<!-- ===== PATCH 5 — CONTROLES DO FILTRO NUTRICIONAL ===== -->
+<script id="profit-nf-js">
+(function(){
+  const box = document.getElementById("nfBox");
+  if(!box) return;
+  const macro  = document.getElementById("nfMacro");
+  const niveis = document.getElementById("nfLevels");
+  const info   = document.getElementById("nfInfo");
+  const limpar = document.getElementById("nfClear");
+  const kcalLevels = document.querySelector("#descubraCard .levels");
+  const kcalAviso  = kcalLevels ? kcalLevels.nextElementSibling : null; // faixa "Nível 5" de calorias
+
+  function curto(max,i){
+    if(i === 1) return "≤" + max[0] + " g";
+    if(i === 5) return ">" + max[3] + " g";
+    return max[i-2] + "–" + max[i-1] + " g";
+  }
+  function longo(max,i){
+    if(i === 1) return "até " + max[0] + " g";
+    if(i === 5) return "acima de " + max[3] + " g";
+    return "acima de " + max[i-2] + " g até " + max[i-1] + " g";
+  }
+
+  function montar(){
+    const nut = nutrienteFiltro;
+    const kcal = nut === "kcal";
+
+    box.querySelectorAll("[data-nf]").forEach(b =>
+      b.classList.toggle("active", b.dataset.nf === nut));
+
+    macro.style.display = kcal ? "none" : "block";
+    if(kcalLevels) kcalLevels.style.display = kcal ? "" : "none";
+    if(kcalAviso)  kcalAviso.style.display  = kcal ? "" : "none";
+    if(kcal) return;
+
+    const f = NF_FAIXAS[nut];
+    niveis.innerHTML = "";
+    for(let i=1;i<=5;i++){
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "nf-level" + (nivelNutri === i ? " active" : "");
+      b.innerHTML = "<strong>N" + i + "</strong><small>" + curto(f.max,i) + "</small>";
+      b.setAttribute("aria-pressed", nivelNutri === i ? "true" : "false");
+      b.onclick = () => {
+        nivelNutri = (nivelNutri === i) ? null : i; // clicar de novo desmarca
+        montar();
+        renderAlimentos();
+      };
+      niveis.appendChild(b);
+    }
+    info.textContent = nivelNutri
+      ? f.nome + " · Nível " + nivelNutri + ": " + longo(f.max,nivelNutri) + " (por 100 g)"
+      : f.nome + ": escolha um nível (por 100 g)";
+    limpar.style.visibility = nivelNutri ? "visible" : "hidden";
+  }
+
+  box.querySelectorAll("[data-nf]").forEach(b => {
+    b.onclick = () => {
+      nutrienteFiltro = b.dataset.nf;
+      nivelNutri = null;
+      montar();
+      renderAlimentos();
+    };
+  });
+
+  limpar.onclick = () => {
+    nivelNutri = null;
+    montar();
+    renderAlimentos();
+  };
+
+  montar();
 })();
 </script>
 
