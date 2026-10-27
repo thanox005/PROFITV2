@@ -6,7 +6,7 @@
 <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0" name="viewport"/>
 <meta content="#0f172a" name="theme-color"/>
 <link href="manifest.json" rel="manifest"/>
-<title>PROFIT 3.4</title>
+<title>PROFIT 3.6</title>
 <style>
 *{
     box-sizing:border-box;
@@ -518,6 +518,51 @@ button{
 .food-buttons{
     display:flex;
     align-items:center;
+}
+
+/* EDITAR ALIMENTO / EDITAR PESO */
+.custom-food-edit,
+.edit-entry{
+    width:30px;
+    height:30px;
+    border-radius:9px;
+    background:var(--soft);
+    color:var(--text);
+    font-size:14px;
+    margin-left:4px;
+    flex-shrink:0;
+}
+
+.entry-actions{
+    display:flex;
+    align-items:center;
+    gap:5px;
+    flex-shrink:0;
+}
+
+.entry.entry-editing{
+    flex-direction:column;
+    align-items:stretch;
+}
+
+.entry-edit-row{
+    display:grid;
+    grid-template-columns:1fr auto auto;
+    gap:6px;
+    margin-top:6px;
+}
+
+.entry-edit-row .btn{
+    width:auto;
+    padding:9px 12px;
+    font-size:12px;
+}
+
+.preview-kcal{
+    margin-top:8px;
+    font-size:12px;
+    color:var(--green-text);
+    min-height:16px;
 }
 
 .modal-backdrop{
@@ -1640,6 +1685,7 @@ main.content > section[data-screen].screen-active{display:block;animation:profit
 <option value="outros">🍽️ Outros</option>
 </select>
 </div>
+<div class="preview-kcal" id="previaCalorias"></div>
 <div class="add-row">
 <button class="btn btn-green" id="adicionarBtn" type="button">
                 + Adicionar alimento
@@ -2307,7 +2353,7 @@ let alimentosPersonalizados =
     lerJSONStorage("nutri_alimentos_personalizados",[]);
 
 function salvarAlimentosPersonalizados(){
-    return salvarJSONStorage("nutri_alimentos_personalizados",alimentosPersonalizados);
+    salvarJSONStorage("nutri_alimentos_personalizados",alimentosPersonalizados);
 }
 
 function listaCompletaAlimentos(){
@@ -2846,6 +2892,7 @@ function renderAlimentos(){
                     +
                 </button>
                 ${item.personalizado ? `
+                    <button class="custom-food-edit" title="Editar alimento personalizado" type="button">✎</button>
                     <button class="custom-food-delete" title="Excluir alimento personalizado" type="button">×</button>
                 ` : ""}
             </div>
@@ -2883,6 +2930,16 @@ function renderAlimentos(){
                 salvarAlimentosPersonalizados();
                 renderAlimentos();
                 toast("Alimento personalizado removido.");
+            };
+        }
+
+        const editarPersonalizado =
+            div.querySelector(".custom-food-edit");
+
+        if(editarPersonalizado){
+            editarPersonalizado.onclick = event => {
+                event.stopPropagation();
+                abrirEdicaoAlimento(item.id);
             };
         }
 
@@ -2930,6 +2987,33 @@ document
    SELECIONAR
 ========================================================= */
 
+function atualizarPreviaCalorias(){
+
+    const el = $("previaCalorias");
+
+    if(!el) return;
+
+    const peso = Number(
+        String($("gramas").value || "").replace(",",".")
+    );
+
+    if(!selecionado || !Number.isFinite(peso) || peso <= 0){
+        el.textContent = "Digite o peso para ver a prévia das calorias.";
+        return;
+    }
+
+    const f = peso / 100;
+
+    el.innerHTML =
+        "🔥 <b>" + numero(selecionado.kcal * f) + " kcal</b> • " +
+        numero(selecionado.p * f) + "g proteína • " +
+        numero(selecionado.c * f) + "g carb. • " +
+        numero(selecionado.g * f) + "g gord.";
+
+}
+
+$("gramas").addEventListener("input", atualizarPreviaCalorias);
+
 function selecionar(item){
 
     selecionado =
@@ -2956,6 +3040,8 @@ function selecionar(item){
 
     $("gramas").value =
         100;
+
+    atualizarPreviaCalorias();
 
     $("gramas").focus();
 
@@ -3155,6 +3241,122 @@ const refeicoes = {
    DIÁRIO
 ========================================================= */
 
+let entradaEditandoItem = null;
+
+function fatorPorGramaEntrada(item){
+
+    const gramas = Number(item.gramas);
+
+    if(gramas > 0){
+        return {
+            kcal:Number(item.kcal || 0) / gramas,
+            p:Number(item.p || 0) / gramas,
+            c:Number(item.c || 0) / gramas,
+            g:Number(item.g || 0) / gramas
+        };
+    }
+
+    const base = listaCompletaAlimentos().find(
+        a => normalizar(a.name) === normalizar(item.alimento)
+    );
+
+    if(!base) return null;
+
+    return {
+        kcal:base.kcal / 100,
+        p:base.p / 100,
+        c:base.c / 100,
+        g:base.g / 100
+    };
+
+}
+
+function montarEdicaoEntrada(entry,item){
+
+    entry.classList.add("entry-editing");
+
+    entry.innerHTML = `
+        <div>
+            <div class="entry-name">${item.alimento}</div>
+            <div class="entry-meta" data-previa></div>
+            <div class="entry-edit-row">
+                <input class="input" data-peso inputmode="decimal" min="1" step="any" type="number" value="${Number(item.gramas) || ""}" placeholder="Gramas">
+                <button class="btn btn-green" data-ok type="button">Salvar</button>
+                <button class="btn btn-light" data-cancelar type="button">Cancelar</button>
+            </div>
+        </div>
+    `;
+
+    const input = entry.querySelector("[data-peso]");
+    const previa = entry.querySelector("[data-previa]");
+    const fator = fatorPorGramaEntrada(item);
+
+    function lerPeso(){
+        return Number(String(input.value || "").replace(",","."));
+    }
+
+    function atualizarPrevia(){
+        const peso = lerPeso();
+        if(!fator || !Number.isFinite(peso) || peso <= 0){
+            previa.textContent = "Digite o novo peso.";
+            return;
+        }
+        previa.textContent =
+            numero(peso) + "g • " +
+            numero(fator.kcal * peso) + " kcal • " +
+            numero(fator.p * peso) + "g proteína";
+    }
+
+    input.addEventListener("input", atualizarPrevia);
+
+    input.addEventListener("keydown", event => {
+        if(event.key === "Enter") entry.querySelector("[data-ok]").click();
+        if(event.key === "Escape") entry.querySelector("[data-cancelar]").click();
+    });
+
+    entry.querySelector("[data-cancelar]").onclick = () => {
+        entradaEditandoItem = null;
+        renderDiario();
+    };
+
+    entry.querySelector("[data-ok]").onclick = () => {
+
+        const peso = lerPeso();
+
+        if(!fator){
+            toast("Não foi possível recalcular este item.");
+            return;
+        }
+
+        if(!Number.isFinite(peso) || peso <= 0){
+            toast("Informe uma quantidade válida.");
+            return;
+        }
+
+        item.gramas = peso;
+        item.kcal = fator.kcal * peso;
+        item.p = fator.p * peso;
+        item.c = fator.c * peso;
+        item.g = fator.g * peso;
+
+        entradaEditandoItem = null;
+
+        salvarStorage();
+        atualizarTudo();
+
+        toast("Peso atualizado! ✅");
+
+    };
+
+    atualizarPrevia();
+
+    setTimeout(() => {
+        input.focus();
+        input.select();
+    }, 30);
+
+}
+
 function renderDiario(){
 
     const container =
@@ -3241,6 +3443,12 @@ function renderDiario(){
                 entry.className =
                     "entry";
 
+                if(entradaEditandoItem === item){
+                    montarEdicaoEntrada(entry,item);
+                    bloco.appendChild(entry);
+                    return;
+                }
+
                 entry.innerHTML = `
 
                     <div>
@@ -3259,14 +3467,30 @@ function renderDiario(){
 
                     </div>
 
-                    <button type="button"
-                        class="remove"
-                        title="Remover"
-                    >
-                        ×
-                    </button>
+                    <div class="entry-actions">
+                        <button type="button"
+                            class="edit-entry"
+                            title="Editar peso"
+                        >
+                            ✎
+                        </button>
+                        <button type="button"
+                            class="remove"
+                            title="Remover"
+                        >
+                            ×
+                        </button>
+                    </div>
 
                 `;
+
+                entry
+                    .querySelector(".edit-entry")
+                    .onclick =
+                    () => {
+                        entradaEditandoItem = item;
+                        renderDiario();
+                    };
 
                 entry
                     .querySelector(".remove")
@@ -4644,6 +4868,29 @@ atualizarModoResumoUI();
    ADICIONAR ALIMENTO PERSONALIZADO
 ========================================================= */
 
+let alimentoEditandoId = null;
+
+function abrirEdicaoAlimento(id){
+
+    const alvo = alimentosPersonalizados.find(a => a.id === id);
+
+    if(!alvo) return;
+
+    alimentoEditandoId = id;
+
+    $("novoAlimentoNome").value = alvo.name;
+    $("novoAlimentoKcal").value = alvo.kcal;
+    $("novoAlimentoProteina").value = alvo.p;
+    $("novoAlimentoCarbo").value = alvo.c;
+    $("novoAlimentoGordura").value = alvo.g;
+
+    $("modalAlimentoTitulo").textContent = "✏️ Editar alimento";
+    $("salvarNovoAlimentoBtn").textContent = "💾 Salvar alterações";
+
+    abrirModalAlimento();
+
+}
+
 function abrirModalAlimento(){
     const modal = $("alimentoModal");
     if(!modal) return;
@@ -4659,6 +4906,10 @@ function fecharModalAlimento(){
 
     modal.classList.remove("show");
     modal.setAttribute("aria-hidden","true");
+
+    alimentoEditandoId = null;
+    if($("modalAlimentoTitulo")) $("modalAlimentoTitulo").textContent = "🥗 Novo alimento";
+    if($("salvarNovoAlimentoBtn")) $("salvarNovoAlimentoBtn").textContent = "💾 Salvar alimento";
 }
 
 function limparFormularioNovoAlimento(){
@@ -4708,12 +4959,45 @@ function salvarNovoAlimento(){
     }
 
     const existe = listaCompletaAlimentos().some(
-        alimento => normalizar(alimento.name) === normalizar(nome)
+        alimento =>
+            alimento.id !== alimentoEditandoId &&
+            normalizar(alimento.name) === normalizar(nome)
     );
 
     if(existe){
         toast("Esse alimento já existe na base.");
         return;
+    }
+
+    if(alimentoEditandoId){
+
+        const alvo = alimentosPersonalizados.find(
+            a => a.id === alimentoEditandoId
+        );
+
+        if(alvo){
+
+            alvo.name = nome;
+            alvo.kcal = kcal;
+            alvo.p = p;
+            alvo.c = c;
+            alvo.g = g;
+
+            salvarAlimentosPersonalizados();
+
+            if(selecionado && selecionado.id === alvo.id){
+                selecionado = null;
+                $("selected").style.display = "none";
+            }
+
+            limparFormularioNovoAlimento();
+            fecharModalAlimento();
+            renderAlimentos();
+            toast("Alimento atualizado! ✅");
+            return;
+
+        }
+
     }
 
     const novo = {
@@ -4727,16 +5011,7 @@ function salvarNovoAlimento(){
     };
 
     alimentosPersonalizados.push(novo);
-
-    // Só fecha o modal quando o navegador confirmar que salvou os dados.
-    if(!salvarAlimentosPersonalizados()){
-        alimentosPersonalizados = alimentosPersonalizados.filter(
-            alimento => alimento.id !== novo.id
-        );
-        toast("Não foi possível salvar no navegador. Libere espaço ou exporte um backup e tente novamente.");
-        return;
-    }
-
+    salvarAlimentosPersonalizados();
     limparFormularioNovoAlimento();
     fecharModalAlimento();
     renderAlimentos();
@@ -6141,38 +6416,5 @@ body:not(.light) .goal-status.status-over{background:#451a1a;color:#fecaca}
 })();
 </script>
 
-
-<!-- CORREÇÃO PROFIT 3.6 — GARANTIA DO CLIQUE EM SALVAR ALIMENTO -->
-<script id="profit-custom-food-save-fix-v36">
-(function(){
-  "use strict";
-  const button = document.getElementById("salvarNovoAlimentoBtn");
-  if(!button) return;
-
-  // Reatribui o clique após os demais módulos, inclusive se algum script
-  // anterior tiver interrompido a instalação do evento original.
-  button.onclick = function(event){
-    if(event) event.preventDefault();
-    if(button.dataset.saving === "1") return;
-    button.dataset.saving = "1";
-    button.disabled = true;
-
-    try {
-      if(typeof window.salvarNovoAlimento !== "function") {
-        throw new Error("A rotina de salvar alimento não foi carregada.");
-      }
-      window.salvarNovoAlimento();
-    } catch(error) {
-      console.error("PROFIT: erro ao salvar alimento personalizado", error);
-      const toast = document.getElementById("toast");
-      if(toast){
-        toast.textContent = "Erro ao salvar alimento. Confira os dados e tente novamente.";
-        toast.classList.add("show");
-        setTimeout(() => toast.classList.remove("show"), 3500);
-      } else {
-        alert("Erro ao salvar alimento. Confira os dados e tente novamente.");
-      }
-    } finally {
-      button.disabled = false;
-      delete button.dataset.saving;
-    }
+</body>
+</html>
